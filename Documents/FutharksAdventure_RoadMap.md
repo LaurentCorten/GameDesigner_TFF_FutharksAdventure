@@ -67,11 +67,11 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] EventBus : instance injectee (pas statique), Subscribe / Unsubscribe / Publish generiques
 - [x] Entity (abstraite, Position en lecture seule) + Player (vide pour l'instant)
 - [x] OccupancyMap : couche des occupants, seule a modifier la position des entites
-- [ ] GameAction (abstraite) : CanExecute() public, TryExecute() avec garde, Execute() protege
-- [ ] MoveAction : case praticable et libre, sinon refus sans tour ; publie EntityMoved
-- [ ] IntentResolver : traduit une intention en action (direction -> MoveAction en 2.3)
-- [ ] TurnManager : action acceptee = tour resolu, publie TurnResolved ; refus = rien ne se passe
-- [ ] (T) Direction, EventBus, OccupancyMap, MoveAction, IntentResolver, TurnManager
+- [x] GameAction (abstraite) : CanExecute() public, TryExecute() avec garde, Execute() protege
+- [x] MoveAction : case praticable et libre, sinon refus sans tour ; publie EntityMoved
+- [x] IntentResolver : traduit une intention en action (direction -> MoveAction en 2.3)
+- [x] TurnManager : action acceptee = tour resolu, publie TurnResolved ; refus = rien ne se passe
+- [x] (T) Direction, EventBus, OccupancyMap, MoveAction, IntentResolver, TurnManager
 
 ### 2.4 Input, affichage des entites, camera, Bootstrap
 - [ ] Input Actions asset : Move, RangedAttack, UseItem, Pause, Confirm, Cancel
