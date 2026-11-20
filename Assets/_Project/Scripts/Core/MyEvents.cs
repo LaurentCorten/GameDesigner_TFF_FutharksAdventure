@@ -17,5 +17,6 @@ namespace FutharksAdventure.Core
         }
     }
 
+    public readonly struct TurnResolved { };
 
 }
