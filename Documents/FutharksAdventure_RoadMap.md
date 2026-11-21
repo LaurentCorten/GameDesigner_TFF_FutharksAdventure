@@ -12,9 +12,6 @@ Legende :
 ## Regles de travail
 
 - Chaque phase produit quelque chose de JOUABLE avant de passer a la suivante.
-- Pas d'anticipation : une interface n'est creee que quand un besoin reel apparait
-  (deux implementations, ou un faux necessaire pour un test). Chaque decision est
-  expliquee et validee avant d'etre codee.
 - Regles du jeu en C# pur (Core) testees ; MonoBehaviours = colle fine ; donnees dans des ScriptableObjects.
 - Communication logique -> affichage par evenements (pas de dependance directe).
 - Point d'entree unique : scene Bootstrap + Composition Root (seul endroit qui fait les new).
@@ -65,9 +62,16 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (V) l’etage de test s’affiche en entier, correctement oriente
 
 ### 2.3 Systeme de tours (Core)
-- [ ] (D) Seance de conception : tours, actions, deplacement, occupation des cases (avant tout code)
-- [ ] Implementation selon les decisions prises
-- [ ] (T) Tests definis a l'issue de la seance de conception
+- [x] (D) Seance de conception : tours, actions, deplacement, occupation des cases (avant tout code)
+- [x] Direction : enum 4 directions cardinales + conversion en decalage GridPosition
+- [x] EventBus : instance injectee (pas statique), Subscribe / Unsubscribe / Publish generiques
+- [x] Entity (abstraite, Position en lecture seule) + Player (vide pour l'instant)
+- [x] OccupancyMap : couche des occupants, seule a modifier la position des entites
+- [x] GameAction (abstraite) : CanExecute() public, TryExecute() avec garde, Execute() protege
+- [x] MoveAction : case praticable et libre, sinon refus sans tour ; publie EntityMoved
+- [x] IntentResolver : traduit une intention en action (direction -> MoveAction en 2.3)
+- [x] TurnManager : action acceptee = tour resolu, publie TurnResolved ; refus = rien ne se passe
+- [x] (T) Direction, EventBus, OccupancyMap, MoveAction, IntentResolver, TurnManager
 
 ### 2.4 Input, affichage des entites, camera, Bootstrap
 - [ ] Input Actions asset : Move, RangedAttack, UseItem, Pause, Confirm, Cancel
