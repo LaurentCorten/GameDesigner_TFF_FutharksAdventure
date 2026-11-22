@@ -278,7 +278,7 @@ Capacites additionnelles possibles, issues des items (chapitre 5) :
 |---|---|---|---|
 | Se deplacer | Fleches, ZQSD, WASD, ou pave numerique (8 haut, 2 bas, 4 gauche, 6 droite) | Stick gauche ou croix directionnelle | Croix directionnelle virtuelle a l'ecran |
 | Attaquer au corps a corps | Se deplacer vers l'ennemi | Se deplacer vers l'ennemi | Se deplacer vers l'ennemi |
-| Attaquer a distance | Barre d'espace, ou 5 du pave numerique | Bouton de face droit (B) [ou Y ou RT?] | Bouton au centre de la croix virtuelle |
+| Attaquer a distance | Barre d'espace, ou 5 du pave numerique | Bouton de face haut (Y) [ou gachette RT?] | Bouton au centre de la croix virtuelle |
 | Utiliser un item | Clic gauche sur l'emplacement dans l'inventaire | Passer a la selection d'item avec le bouton de face gauche (X), naviguer a la croix directionnelle, confirmer | lache Appui sur l'emplacement  |
 | Voir la description d'un item | Survol de l'emplacement | Emplacement selectionne | Appui non lache sur l'emplacement |
 | Confirmer / annuler | NA./NA. | Bouton de face bas (A) / bouton de face droit (B) | NA. / glisser hors de l'item avant de lacher |

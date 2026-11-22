@@ -1,5 +1,6 @@
-<Solution>
+﻿<Solution>
   <Project Path="FutharksAdventure.Game.csproj" />
   <Project Path="FutharksAdventure.Core.csproj" />
   <Project Path="EditMode.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
 </Solution>

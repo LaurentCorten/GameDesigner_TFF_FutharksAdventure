@@ -2,7 +2,8 @@
     "name": "FutharksAdventure.Game",
     "rootNamespace": "FutharksAdventure.Game",
     "references": [
-        "GUID:516f74fe039695a4184bdba1dfa78cec"
+        "GUID:516f74fe039695a4184bdba1dfa78cec",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
