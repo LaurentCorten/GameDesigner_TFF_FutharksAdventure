@@ -28,5 +28,10 @@ namespace FutharksAdventure.Game
                         _tilemap.SetTile(new Vector3Int(x, y, 0), tileBase);
                 }
         }
+
+        public Vector3 CellToWorld(GridPosition position)
+        {
+            return _tilemap.GetCellCenterWorld(new Vector3Int(position.X, position.Y, 0));
+        }
     }
 }

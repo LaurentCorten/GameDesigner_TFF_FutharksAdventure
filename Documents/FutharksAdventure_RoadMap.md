@@ -74,10 +74,10 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (T) Direction, EventBus, OccupancyMap, MoveAction, IntentResolver, TurnManager
 
 ### 2.4 Input, affichage des entites, camera, Bootstrap
-- [ ] Input Actions asset : Move, RangedAttack, UseItem, Pause, Confirm, Cancel
-- [ ] Lecture de l'input (clavier : fleches / ZQSD / WASD / pave num) ; la logique ne connait que des actions abstraites
-- [ ] EntityView : composant generique d'affichage d'une entite (joueur pour l'instant), deplacement instantane
-- [ ] Camera qui suit le joueur ; Orthographic Size dans une config (fixe en jeu, ajustable aux playtests)
+- [x] Input Actions asset - Action Map Gameplay : Move, RangedAttack
+- [x] Lecture de l'input (clavier : fleches / ZQSD / WASD / pave num) ; la logique ne connait que des actions abstraites
+- [x] EntityView : composant generique d'affichage d'une entite (joueur pour l'instant), deplacement instantane
+- [x] Camera qui suit le joueur (cinemachine);
 - [ ] Bootstrap : cree la grille, le joueur, l'input, le TurnManager, les vues, et les relie
 - [ ] (V) Le carre se deplace case par case, bloque par les murs, la camera le suit
 
@@ -106,6 +106,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 ### 3.3 Potion et inventaire (logique seule)
 - [ ] Inventaire en file : 3 emplacements, rempli de droite a gauche, sans trou
 - [ ] Ajout : case libre la plus a droite ; plein : ejection de l'item le plus a droite, decalage, ajout a gauche
+- [ ] Input Actions asset - Action Map Gameplay : UseItem
 - [ ] Utilisation : consommation puis decalage vers la droite des items a gauche
 - [ ] Potion de vie : soin moyen plafonne aux PV max
 - [ ] (T) Ajout, ejection quand plein (l'item ejecte est renvoye), decalage apres utilisation, potion plafonnee
@@ -184,6 +185,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 ## Phase 9 - Interface et flux de jeu (S5) -> J4 = SLICE
 
 - [ ] State Machine : Bootstrap -> Menu -> Run -> FinDeRun -> Menu ; (D) pause = etat ou sous-etat
+- [ ] Input Actions asset - Action Map UI : Pause, Confirm, Cancel
 - [ ] HUD abonne aux evenements : PV, nourriture, hachettes, inventaire, score ; zone reservee monnaie
 - [ ] Utilisation d'item par clic, description au survol
 - [ ] Menu principal : Nouvelle run, Leaderboard, Quitter
