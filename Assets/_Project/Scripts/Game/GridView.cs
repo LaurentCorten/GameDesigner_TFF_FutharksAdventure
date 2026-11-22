@@ -1,7 +1,7 @@
-using FutharksAdventure.Core;
 using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using FutharksAdventure.Core;
 
 namespace FutharksAdventure.Game
 {

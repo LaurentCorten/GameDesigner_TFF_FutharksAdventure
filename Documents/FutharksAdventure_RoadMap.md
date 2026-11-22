@@ -78,8 +78,8 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] Lecture de l'input (clavier : fleches / ZQSD / WASD / pave num) ; la logique ne connait que des actions abstraites
 - [x] EntityView : composant generique d'affichage d'une entite (joueur pour l'instant), deplacement instantane
 - [x] Camera qui suit le joueur (cinemachine);
-- [ ] Bootstrap : cree la grille, le joueur, l'input, le TurnManager, les vues, et les relie
-- [ ] (V) Le carre se deplace case par case, bloque par les murs, la camera le suit
+- [x] Bootstrap : cree la grille, le joueur, l'input, le TurnManager, les vues, et les relie
+- [x] (V) Le carre se deplace case par case, bloque par les murs, la camera le suit
 
 ---
 

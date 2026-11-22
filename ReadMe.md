@@ -33,16 +33,16 @@ The deliverable is twofold:
 | Current stable (`main`) | None yet: the first stable release will be the vertical slice |
 | Next milestone | Vertical slice, Tier 0 (MVP), December 2026 (see [Roadmap](Documents/FutharksAdventure_RoadMap.md)) |
 
-**Progress on `dev`** *(last update: 2026-11-20)*
+**Progress on `dev`** *(last update: 2026-11-22)*
 
 | Phase | Content | Status |
 |---|---|---|
-| 1 | Project setup: Unity, Git, assemblies, EditMode test runner | ✅ Done (Bootstrap scene comes with 2.4) |
+| 1 | Project setup: Unity, Git, assemblies, EditMode test runner | ✅ Done |
 | 2.1 | Grid model (Core) | ✅ Done |
 | 2.2 | Grid view: test floor rendered in a Tilemap | ✅ Done |
 | 2.3 | Turn system (Core): directions, event bus, cell occupancy, actions, turn manager, all unit tested | ✅ Done |
-| 2.4 | Input, entity display, camera follow, Bootstrap | ⏳ Next |
-| 3 | Player: stats, food and starvation, combat, inventory | 🔜 |
+| 2.4 | Input (Input System), entity display, camera follow (Cinemachine), Bootstrap | ✅ Done |
+| 3 | Player: stats, food and starvation, combat, inventory | ⏳ Next |
 | 4 | Enemies | 🔜 |
 | 5 | Procedural generation and fog of war | 🔜 |
 | 6 | Items on the ground and pickup | 🔜 |
@@ -52,7 +52,7 @@ The deliverable is twofold:
 | 10 | Assets, animations, audio | 🔜 |
 | 11 | Playtests, balancing, PC build | 🔜 |
 
-> Not playable yet: the game logic currently runs in unit tests only. The first playable build (a character moving on the grid) comes with phase 2.4.
+> First playable version in the editor: a character moves tile by tile on a hard-coded test floor, blocked by walls, followed by the camera. No enemies or resources yet.
 
 ### Tech & architecture
 - **Unity 6.5**, **C#**
@@ -72,11 +72,11 @@ The deliverable is twofold:
 
 **The documentation is written in French.*
 
-<!-- ### Run the project (WIP)
+### Run the project
 1. Clone the repository.
 2. Open it with **Unity 6.5**.
 3. Open the **Bootstrap** scene and press Play.
-4. Unit tests: *Window > General > Test Runner > EditMode*. -->
+4. Unit tests: *Window > General > Test Runner > EditMode*.
 
 ### Credits & license
 - Design and code: **Laurent Corten** — [LinkedIn](https://www.linkedin.com/in/laurentcorten/)
@@ -112,16 +112,16 @@ Le livrable est double :
 | Version stable actuelle (`main`) | Aucune pour l'instant : la première version stable sera la vertical slice |
 | Prochain jalon | Vertical slice, palier 0 (MVP), décembre 2026 (voir [Roadmap](Documents/FutharksAdventure_RoadMap.md)) |
 
-**Avancement sur `dev`** *(dernière mise à jour : 20/11/2026)*
+**Avancement sur `dev`** *(dernière mise à jour : 22/11/2026)*
 
 | Phase | Contenu | Statut |
 |---|---|---|
-| 1 | Setup du projet : Unity, Git, assemblies, tests EditMode | ✅ Terminé (scène Bootstrap en 2.4) |
+| 1 | Setup du projet : Unity, Git, assemblies, tests EditMode | ✅ Terminé |
 | 2.1 | Modèle de grille (Core) | ✅ Terminé |
 | 2.2 | Vue de grille : étage de test affiché dans un Tilemap | ✅ Terminé |
 | 2.3 | Système de tours (Core) : directions, bus d'événements, occupation des cases, actions, gestionnaire de tours, le tout testé | ✅ Terminé |
-| 2.4 | Input, affichage des entités, caméra qui suit, Bootstrap | ⏳ En cours |
-| 3 | Joueur : stats, nourriture et famine, combat, inventaire | 🔜 |
+| 2.4 | Input (Input System), affichage des entités, caméra qui suit (Cinemachine), Bootstrap | ✅ Terminé |
+| 3 | Joueur : stats, nourriture et famine, combat, inventaire | ⏳ À suivre |
 | 4 | Ennemis | 🔜 |
 | 5 | Génération procédurale et brouillard | 🔜 |
 | 6 | Items au sol et ramassage | 🔜 |
@@ -131,7 +131,7 @@ Le livrable est double :
 | 10 | Assets, animations, audio | 🔜 |
 | 11 | Playtests, équilibrage, build PC | 🔜 |
 
-> Pas encore jouable : la logique du jeu tourne pour l'instant uniquement dans les tests unitaires. La première version jouable (un personnage qui se déplace sur la grille) arrive avec la phase 2.4.
+> Première version jouable dans l'éditeur : un personnage se déplace case par case sur un étage de test codé en dur, bloqué par les murs, suivi par la caméra. Pas encore d'ennemis ni de ressources.
 
 ### Technique et architecture
 - **Unity 6.5**, **C#**
@@ -149,11 +149,11 @@ Le livrable est double :
 | [Roadmap](Documents/FutharksAdventure_RoadMap.md) | Plan de développement de la vertical slice, phase par phase |
 | [CV](Documents/CORTENLaurent-CV_GameDesigner_Developer_2026.fr.pdf) | CV de l'auteur |
 
-<!-- ### Lancer le projet (WIP)
+### Lancer le projet
 1. Cloner le dépôt.
 2. L'ouvrir avec **Unity 6.5**.
 3. Ouvrir la scène **Bootstrap** et lancer le Play mode.
-4. Tests unitaires : *Window > General > Test Runner > EditMode*. -->
+4. Tests unitaires : *Window > General > Test Runner > EditMode*.
 
 ### Crédits et licence
 - Design et code : **Laurent Corten** — [LinkedIn](https://www.linkedin.com/in/laurentcorten/)

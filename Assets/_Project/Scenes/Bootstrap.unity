@@ -319,6 +319,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: FutharksAdventure.Game::FutharksAdventure.Game.Bootstrap
   _gridView: {fileID: 1413802357}
+  _playerPrefab: {fileID: 5597077182683669757, guid: 9379071930c675940889273eabdc4ada, type: 3}
+  _cinemachineCamera: {fileID: 725857695}
 --- !u!4 &431645110
 Transform:
   m_ObjectHideFlags: 0
@@ -602,8 +604,8 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -507843919
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}

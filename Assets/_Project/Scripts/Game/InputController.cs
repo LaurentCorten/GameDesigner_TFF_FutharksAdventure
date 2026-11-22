@@ -5,7 +5,7 @@ using FutharksAdventure.Core;
 
 namespace FutharksAdventure.Game
 {
-    public class InputController : FutharksInputMap.IGamePlayActions
+    public class InputController : FutharksInputMap.IGameplayActions
     {
 
         private readonly FutharksInputMap _inputActions;
@@ -19,17 +19,17 @@ namespace FutharksAdventure.Game
             _turnManager = turnManager;
         }
 
-        //--- Mock LifeCycle -----
+        //--- LifeCycle -----
         public void Enable()
         {
-            _inputActions.GamePlay.AddCallbacks(this);
-            _inputActions.GamePlay.Enable();
+            _inputActions.Gameplay.AddCallbacks(this);
+            _inputActions.Gameplay.Enable();
         }
 
         public void Disable()
         {
-            _inputActions.GamePlay.Disable();
-            _inputActions.GamePlay.RemoveCallbacks(this);
+            _inputActions.Gameplay.Disable();
+            _inputActions.Gameplay.RemoveCallbacks(this);
         }
 
         //--- CallBacks ---------------
