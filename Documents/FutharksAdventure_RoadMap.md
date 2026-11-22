@@ -76,8 +76,8 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 ### 2.4 Input, affichage des entites, camera, Bootstrap
 - [x] Input Actions asset - Action Map Gameplay : Move, RangedAttack
 - [x] Lecture de l'input (clavier : fleches / ZQSD / WASD / pave num) ; la logique ne connait que des actions abstraites
-- [ ] EntityView : composant generique d'affichage d'une entite (joueur pour l'instant), deplacement instantane
-- [ ] Camera qui suit le joueur ; Orthographic Size dans une config (fixe en jeu, ajustable aux playtests)
+- [x] EntityView : composant generique d'affichage d'une entite (joueur pour l'instant), deplacement instantane
+- [x] Camera qui suit le joueur (cinemachine);
 - [ ] Bootstrap : cree la grille, le joueur, l'input, le TurnManager, les vues, et les relie
 - [ ] (V) Le carre se deplace case par case, bloque par les murs, la camera le suit
 
