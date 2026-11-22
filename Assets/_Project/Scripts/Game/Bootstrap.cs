@@ -1,5 +1,7 @@
-using UnityEngine;
 using FutharksAdventure.Core;
+using System;
+using Unity.Cinemachine;
+using UnityEngine;
 
 namespace FutharksAdventure.Game
 {
@@ -10,17 +12,56 @@ namespace FutharksAdventure.Game
     public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private GridView _gridView;
+        [SerializeField] private EntityView _playerPrefab;
+        [SerializeField] CinemachineCamera _cinemachineCamera;
+
+        private EventBus _eventBus;
+        private FutharksInputMap _inputMap;
+        private FloorGrid _floorGrid;
+        private Player _player;
+        private OccupancyMap _occupancyMap;
+        private IntentResolver _intentResolver;
+        private TurnManager _turnManager;
+        private InputController _inputController;
+
+        private void Awake()
+        {
+            _inputMap = new FutharksInputMap();
+            _player = new Player();
+
+            _eventBus = new EventBus();
+            _occupancyMap = new OccupancyMap();
+            _floorGrid = BuildTestFloor();
+            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus);
+            _turnManager = new TurnManager(_player, _intentResolver, _eventBus);
+            _inputController = new InputController(_inputMap, _turnManager);
+        }
 
         private void Start()
         {
-            FloorGrid testFloor = BuildTestFloor();
-            _gridView.Render(testFloor);
+            _gridView.Render(_floorGrid);
+
+            #region TEMPORARY: Initialisation du player
+            GridPosition entryGridPosition = GetEntryPosition();
+            _occupancyMap.Place(_player, entryGridPosition);
+            EntityView playerEntityView = Instantiate(_playerPrefab);
+            playerEntityView.Init(_player, _eventBus, _gridView);
+            _cinemachineCamera.Target.TrackingTarget = playerEntityView.transform; 
+            #endregion
+
+            _inputController.Enable();
+        }
+
+        private void OnDestroy()
+        {
+            _inputController.Disable();
+            _inputMap.Dispose();
         }
 
         // TEMPORARY: hard-coded test floor, replaced by the procedural generator in Phase 5
         private static FloorGrid BuildTestFloor()
         {
-            // Instanciate the a grid big enough
+            // Instanciate a grid big enough
             var floor = new FloorGrid(21, 11);
 
             // Carve the 2 rooms in it
@@ -40,6 +81,21 @@ namespace FutharksAdventure.Game
             floor.SetTileType(new GridPosition(18, 5), TileType.Exit);
 
             return floor;
+        }
+
+        // TEMPORARY
+        private GridPosition GetEntryPosition()
+        {
+            for (int x = 0; x < _floorGrid.Width; x++)
+                for (int y = 0; y < _floorGrid.Height; y++)
+                {
+                    TileType tileType = _floorGrid.GetTileType(new GridPosition(x, y));
+                    if(tileType == TileType.Entry)
+                    {
+                        return new GridPosition(x, y);
+                    }
+                }
+            throw new InvalidOperationException("Pas de TileType.Entry dans le grid !");
         }
     }
 }
