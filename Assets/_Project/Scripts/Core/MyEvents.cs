@@ -17,6 +17,20 @@ namespace FutharksAdventure.Core
         }
     }
 
-    public readonly struct TurnResolved { };
+    public readonly struct TurnResolved { }
 
+    public readonly struct FoodChanged
+    {
+        public int Current { get; }
+
+        public FoodChanged(int current)
+        {  Current = current; }
+    }
+
+    public readonly struct HealthChanged
+    {
+        public Creature Creature { get; }
+        public int Current { get; }
+        public 
+    }
 }
