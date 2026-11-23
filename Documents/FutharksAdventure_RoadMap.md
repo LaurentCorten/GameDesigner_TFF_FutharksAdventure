@@ -41,7 +41,7 @@ Tache de fond des S1 (peu d'heures) : chercher et choisir le pack d'assets exter
 
 - [x] Projet Unity 6, Git, packages, arborescence, Assembly Definitions FutharksAdventure.{Core, Game, Tests}
 - [x] (T) Les tests EditMode se lancent
-- [ ] Scene Bootstrap + script Bootstrap (Composition Root minimal) -> fait en Phase 2.4
+- [x] Scene Bootstrap + script Bootstrap (Composition Root minimal)
 
 ---
 
