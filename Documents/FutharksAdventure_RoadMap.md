@@ -1,6 +1,6 @@
 # FUTHARK'S ADVENTURE - Roadmap Vertical Slice (v2)
 
-Base : GDD octobre 2026 (chapitre 12).
+Base : GDD octobre 2026 (chapitre 10).
 Echeance : slice fonctionnelle le 01/12/2026, produit fini le 15/12/2026.
 Budget : ~10-15 h/semaine jusqu'au 22/11, ~30 h/semaine du 23/11 au 15/12.
 
@@ -37,7 +37,7 @@ Tache de fond des S1 (peu d'heures) : chercher et choisir le pack d'assets exter
 
 ---
 
-## Phase 1 - Setup du projet [quasi termine]
+## Phase 1 - Setup du projet [termine]
 
 - [x] Projet Unity 6, Git, packages, arborescence, Assembly Definitions FutharksAdventure.{Core, Game, Tests}
 - [x] (T) Les tests EditMode se lancent
@@ -65,7 +65,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (D) Seance de conception : tours, actions, deplacement, occupation des cases (avant tout code)
 - [x] Direction : enum 4 directions cardinales + conversion en decalage GridPosition
 - [x] EventBus : instance injectee (pas statique), Subscribe / Unsubscribe / Publish generiques
-- [x] Entity (abstraite, Position en lecture seule) + Player (vide pour l'instant)
+- [x] Entity (abstraite, setter de Position internal ; convention : seule OccupancyMap la modifie) + Player (vide pour l'instant)
 - [x] OccupancyMap : couche des occupants, seule a modifier la position des entites
 - [x] GameAction (abstraite) : CanExecute() public, TryExecute() avec garde, Execute() protege
 - [x] MoveAction : case praticable et libre, sinon refus sans tour ; publie EntityMoved
@@ -81,6 +81,18 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] Bootstrap : cree la grille, le joueur, l'input, le TurnManager, les vues, et les relie
 - [x] (V) Le carre se deplace case par case, bloque par les murs, la camera le suit
 
+### 2.5 Review de fin de phase
+- [x] Review globale de la structure, des scripts et des tests
+- [x] (T) IntentResolverTests reactives ; asmdef Tests renomme FutharksAdventure.Tests
+- [x] EventBus : double abonnement ignore, handler null refuse
+- [x] MoveAction : invariant "position de depart" verifie dans CanExecute (exception = bug, pas regle de jeu)
+- [x] Gardes null des constructeurs (MoveAction, IntentResolver, TurnManager) ; taille de FloorGrid > 0
+- [x] Gardes des scripts Game : Bootstrap, GridView, TileSetConfig, EntityView, InputController
+- [x] (T) Tests de gardes complementaires (EventBus, MoveAction, IntentResolver, TurnManager, FloorGrid, OccupancyMap, RoomCarver, Direction)
+- [x] Conventions : `is null` en C# pur, `== null` pour UnityEngine.Object ; style NUnit Assert.That
+- Reportes : input en Button (palier), conversion GridPosition -> monde (au prochain besoin),
+  ratio de la Game view (Phase 10, Pixel Perfect Camera), repasse de proprete (Phase 11)
+
 ---
 
 ## Phase 3 - Le joueur (S2)
@@ -91,25 +103,34 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [ ] Cout du tour : -1 nourriture ; a 0 : -1 PV par tour
 - [ ] Evenement PlayerDied
 - [ ] (T) Consommation, famine, mort par famine sans ennemi
+- [x] (D) Techno UI : uGUI (Canvas + TextMeshPro)
+- [ ] (D) Orchestration du tour : etapes explicites dans TurnManager ou abonnement a TurnResolved
+- [ ] HUD : squelette du HUD final (visuels provisoires) abonne aux evenements : PV, nourriture
+- [ ] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
 
 ### 3.2 Combat
 - [ ] Sante (TakeDamage, IsDead) partagee joueur / ennemis
 - [ ] Attaque melee : MoveAction vers une case ennemie => AttackAction
 - [ ] Degats fixes, toujours touche (le test de touche est un ajout de palier)
-- [ ] ThrowAction + selection automatique de cible (regles GDD 6.6) :
+- [ ] ThrowAction + selection automatique de cible (regles GDD 4.5) :
       alignement 4 axes, portee = VisionRange (carre), ligne de visee non bloquee par un mur,
       pas de case adjacente, plus proche, egalite -> cible precedente, sinon moins de PV
       (D) egalite de PV aussi : premier de la liste en attendant
 - [ ] Aucune cible ou stock vide : action refusee, aucun tour, aucune hachette perdue
-- [ ] (T) Un test par regle du tableau 6.6
+- [ ] (D) Entree du TurnManager : une methode Submit par action ou Submit(intent)
+- [ ] HUD : compteur de hachettes
+- [ ] (V) Le stock de hachettes diminue a l'ecran, refus visible sans tour consomme
+- [ ] (T) Un test par regle du tableau 4.5
 
-### 3.3 Potion et inventaire (logique seule)
+### 3.3 Potion et inventaire
 - [ ] Inventaire en file : 3 emplacements, rempli de droite a gauche, sans trou
 - [ ] Ajout : case libre la plus a droite ; plein : ejection de l'item le plus a droite, decalage, ajout a gauche
-- [ ] Input Actions asset - Action Map Gameplay : UseItem
 - [ ] Utilisation : consommation puis decalage vers la droite des items a gauche
 - [ ] Potion de vie : soin moyen plafonne aux PV max
 - [ ] (T) Ajout, ejection quand plein (l'item ejecte est renvoye), decalage apres utilisation, potion plafonnee
+- [ ] HUD : 3 emplacements d'inventaire ; utilisation par clic gauche sur l'emplacement (GDD 4.4)
+- [ ] (D) Remplir l'inventaire avant le ramassage (Phase 6) pour la verification visuelle
+- [ ] (V) Ajout, ejection, decalage et utilisation visibles a l'ecran
 
 ### Fin de S2
 - [ ] Choisir et acheter / telecharger le pack d'assets (au plus tard le 08/11) : fixe la taille de tuile
@@ -140,6 +161,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [ ] Seed de run ; seed d'etage derivee de (seed de run, numero d'etage)
 - [ ] Affichage ASCII de debug
 - [ ] (T) 1000 seeds : 100 % des etages completables, sortie != entree
+- [ ] (T) Toutes les entites placees par le generateur sont sur une case praticable
 
 ### 5.2 Brouillard
 - [ ] Etat par case (Core) : jamais vue / deja vue / visible
@@ -169,6 +191,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [ ] Etage de boss : une grande piece, le boss garde la sortie
 - [ ] Boss : 1 pattern garanti ; 2e et 3e patterns (+)
 - [ ] Victoire = boss mort ; defaite = PV a 0
+- [ ] Nouvel EventBus a chaque run (aucun abonne fantome d'une run a l'autre)
 - [ ] (V) Une run complete se joue du premier etage a la victoire ou la mort
 
 ---
@@ -185,9 +208,9 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 ## Phase 9 - Interface et flux de jeu (S5) -> J4 = SLICE
 
 - [ ] State Machine : Bootstrap -> Menu -> Run -> FinDeRun -> Menu ; (D) pause = etat ou sous-etat
-- [ ] Input Actions asset - Action Map UI : Pause, Confirm, Cancel
-- [ ] HUD abonne aux evenements : PV, nourriture, hachettes, inventaire, score ; zone reservee monnaie
-- [ ] Utilisation d'item par clic, description au survol
+- [ ] Input Actions asset - Action Map UI : Pause (Echap)
+- [ ] HUD : completer le squelette (score, zone reservee monnaie)
+- [ ] Description d'item au survol
 - [ ] Menu principal : Nouvelle run, Leaderboard, Quitter
 - [ ] Menu pause : reprendre, abandonner, quitter
 - [ ] Ecran de fin : resultat, cause, score, position au leaderboard, rejouer / menu
@@ -215,7 +238,8 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [ ] Equilibrage via les SO : nourriture, PV, hachettes, VisionRange, densites, stats monstres/boss, nombre d'etages
 - [ ] Objectif : la famine met la pression sans etre injuste, le boss est un vrai pic
 - [ ] Corriger les bugs bloquants ; definir la configuration minimale
-- [ ] (V) Criteres du GDD 12.6 tous valides
+- [ ] (V) Criteres du GDD 10.4 tous valides
+- [ ] (+) Repasse de proprete : un fichier par type, langue des commentaires, noms des tests
 
 ---
 
