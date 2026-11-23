@@ -82,5 +82,17 @@ namespace FutharksAdventure.Tests
             Assert.Throws<InvalidOperationException>(
                 () => _map.Move(_player, new GridPosition(1, 1)));
         }
+
+        [Test]
+        public void Place_NullEntity_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => _map.Place(null, new GridPosition(1, 1)));
+        }
+
+        [Test]
+        public void Move_NullEntity_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => _map.Move(null, new GridPosition(1, 1)));
+        }
     }
 }

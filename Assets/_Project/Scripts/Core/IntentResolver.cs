@@ -1,6 +1,8 @@
 
 
 
+using System;
+
 namespace FutharksAdventure.Core
 {
     public class IntentResolver
@@ -11,6 +13,10 @@ namespace FutharksAdventure.Core
 
         public IntentResolver(FloorGrid grid, OccupancyMap occupancyMap, EventBus eventBus)
         {
+            if(grid is null) throw new ArgumentNullException(nameof(grid));
+            if(occupancyMap is null) throw new ArgumentNullException(nameof(occupancyMap));
+            if(eventBus is null) throw new ArgumentNullException(nameof(eventBus));
+            
             _grid = grid;
             _occupancyMap = occupancyMap;
             _eventBus = eventBus;

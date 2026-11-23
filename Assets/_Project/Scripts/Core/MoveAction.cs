@@ -14,6 +14,11 @@ namespace FutharksAdventure.Core
 
         public MoveAction(Entity entity, Direction direction, FloorGrid floorGrid, OccupancyMap occupancyMap, EventBus eventBus)
         {
+            if(entity is null) throw new ArgumentNullException(nameof(entity));
+            if(floorGrid is null) throw new ArgumentNullException(nameof(floorGrid));
+            if(occupancyMap is null) throw new ArgumentNullException(nameof(occupancyMap));
+            if(eventBus is null) throw new ArgumentNullException(nameof(eventBus));
+
             _entity = entity;
             _grid = floorGrid;
             _occupancyMap = occupancyMap;
@@ -22,13 +27,16 @@ namespace FutharksAdventure.Core
             _toPosition = _fromPosition + direction.ToGridOffset();
         }
 
-        public override bool CanExecute() => _grid.IsWalkable(_toPosition) && !_occupancyMap.IsOccupied(_toPosition);
-
-        protected override void Execute()
+        public override bool CanExecute()
         {
             if (_entity.Position != _fromPosition)
                 throw new InvalidOperationException("La position initiale n'est plus valide");
-            
+
+            return _grid.IsWalkable(_toPosition) && !_occupancyMap.IsOccupied(_toPosition);
+        }
+
+        protected override void Execute()
+        {
             _occupancyMap.Move(_entity, _toPosition);
             _eventBus.Publish(new EntityMoved(_entity, _fromPosition, _toPosition));
         }
