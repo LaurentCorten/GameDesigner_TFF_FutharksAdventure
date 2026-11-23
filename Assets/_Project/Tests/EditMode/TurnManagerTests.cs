@@ -19,7 +19,7 @@ namespace FutharksAdventure.Tests
             var grid = TestFloors.CreateRoom3x3();
             _bus = new EventBus();
             _occupancy = new OccupancyMap();
-            _player = new Player();
+            _player = new Player(10,10);
             _occupancy.Place(_player, new GridPosition(2, 3)); // contre le mur Nord
 
             _resolver = new IntentResolver(grid, _occupancy, _bus);
