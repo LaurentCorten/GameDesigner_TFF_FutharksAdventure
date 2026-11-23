@@ -1,5 +1,6 @@
 using FutharksAdventure.Core;
 using NUnit.Framework;
+using System;
 
 namespace FutharksAdventure.Tests
 {
@@ -100,6 +101,81 @@ namespace FutharksAdventure.Tests
             CreateMove(Direction.North).TryExecute();
 
             Assert.That(published, Is.False);
+        }
+
+        [Test]
+        public void TryExecute_AfterEntityMovedElsewhere_Throws()
+        {
+            var move = CreateMove(Direction.North);
+            _occupancy.Move(_player, new GridPosition(1, 2));
+
+            Assert.Throws<InvalidOperationException>(() => move.TryExecute());
+        }
+
+        [Test] // le trou decrit plus haut
+        public void TryExecute_AfterEntityMovedElsewhere_EvenIfTargetOccupied_Throws()
+        {
+            var move = CreateMove(Direction.North);             // cible (2,3)
+            _occupancy.Move(_player, new GridPosition(1, 2));
+            _occupancy.Place(new Player(), NorthOfCenter);      // la cible est maintenant occupee
+
+            Assert.Throws<InvalidOperationException>(() => move.TryExecute());
+        }
+
+        [Test]
+        public void TryExecute_EntityNotPlaced_Throws()
+        {
+            var grid = new FloorGrid(1, 2);
+            grid.SetTileType(new GridPosition(0, 1), TileType.Floor);
+            var unplaced = new Player(); // Position par defaut (0,0), absente de la carte
+
+            var move = new MoveAction(unplaced, Direction.North, grid, new OccupancyMap(), _bus);
+
+            Assert.Throws<InvalidOperationException>(() => move.TryExecute());
+        }
+
+        [Test]
+        public void CanExecute_TowardOutsideGrid_ReturnsFalse()
+        {
+            var grid = new FloorGrid(1, 1);
+            grid.SetTileType(new GridPosition(0, 0), TileType.Floor);
+            var occupancy = new OccupancyMap();
+            var player = new Player();
+            occupancy.Place(player, new GridPosition(0, 0));
+
+            var move = new MoveAction(player, Direction.West, grid, occupancy, _bus);
+
+            Assert.That(move.CanExecute(), Is.False);
+        }
+
+        [Test]
+        public void Constructor_NullEntity_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new MoveAction(null, Direction.North, _grid, _occupancy, _bus));
+        }
+
+        [Test]
+        public void Constructor_NullGrid_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new MoveAction(_player, Direction.North, null, _occupancy, _bus));
+        }
+
+        [Test]
+        public void Constructor_NullOccupancyMap_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new MoveAction(_player, Direction.North, _grid, null, _bus));
+        }
+
+        [Test]
+        public void Constructor_NullEventBus_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new MoveAction(_player, Direction.North, _grid, _occupancy, null));
+        }
+
+        [Test]
+        public void Constructor_UndefinedDirection_Throws()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new MoveAction(_player, (Direction)99, _grid, _occupancy, _bus));
         }
     }
 }

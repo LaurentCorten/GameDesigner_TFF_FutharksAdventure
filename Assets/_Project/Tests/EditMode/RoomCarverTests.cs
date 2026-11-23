@@ -137,5 +137,11 @@ namespace FutharksAdventure.Tests
                 for (int y = 0; y < 9; y++)
                     Assert.AreEqual(TileType.Empty, TileAt(x, y), $"La grille a ete modifiee en ({x},{y})");
         }
+
+        [Test]
+        public void CarveRoom_NullGrid_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => RoomCarver.CarveRoom(null, new GridPosition(3, 3), 3, 3, Sides.None));
+        }
     }
 }

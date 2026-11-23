@@ -1,5 +1,6 @@
 using FutharksAdventure.Core;
 using NUnit.Framework;
+using System;
 
 namespace FutharksAdventure.Tests
 {
@@ -30,6 +31,30 @@ namespace FutharksAdventure.Tests
             _resolver.Resolve(_player, Direction.East).TryExecute();
 
             Assert.That(_player.Position, Is.EqualTo(new GridPosition(3, 2)));
+        }
+
+        [Test]
+        public void Constructor_NullGrid_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new IntentResolver(null, _occupancy, new EventBus()));
+        }
+
+        [Test]
+        public void Constructor_NullOccupancyMap_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new IntentResolver(TestFloors.CreateRoom3x3(), null, new EventBus()));
+        }
+
+        [Test]
+        public void Constructor_NullEventBus_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new IntentResolver(TestFloors.CreateRoom3x3(), _occupancy, null));
+        }
+
+        [Test] // passera tout seul une fois le constructeur de MoveAction protege
+        public void Resolve_NullEntity_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => _resolver.Resolve(null, Direction.North));
         }
     }
 }

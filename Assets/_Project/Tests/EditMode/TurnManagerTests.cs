@@ -1,6 +1,7 @@
-using System.Collections.Generic;
 using FutharksAdventure.Core;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace FutharksAdventure.Tests
 {
@@ -10,6 +11,7 @@ namespace FutharksAdventure.Tests
         private OccupancyMap _occupancy;
         private Player _player;
         private TurnManager _turnManager;
+        private IntentResolver _resolver;
 
         [SetUp]
         public void SetUp()
@@ -20,8 +22,8 @@ namespace FutharksAdventure.Tests
             _player = new Player();
             _occupancy.Place(_player, new GridPosition(2, 3)); // contre le mur Nord
 
-            var resolver = new IntentResolver(grid, _occupancy, _bus);
-            _turnManager = new TurnManager(_player, resolver, _bus);
+            _resolver = new IntentResolver(grid, _occupancy, _bus);
+            _turnManager = new TurnManager(_player, _resolver, _bus);
         }
 
         [Test]
@@ -67,6 +69,25 @@ namespace FutharksAdventure.Tests
             _turnManager.SubmitMove(Direction.South);
 
             Assert.That(log, Is.EqualTo(new[] { "moved", "turn" }));
+        }
+
+
+        [Test]
+        public void Constructor_NullPlayer_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TurnManager(null, _resolver, _bus));
+        }
+
+        [Test]
+        public void Constructor_NullResolver_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TurnManager(_player, null, _bus));
+        }
+
+        [Test]
+        public void Constructor_NullEventBus_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new TurnManager(_player, _resolver, null));
         }
     }
 }

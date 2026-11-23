@@ -1,5 +1,6 @@
 using FutharksAdventure.Core;
 using NUnit.Framework;
+using System;
 
 namespace FutharksAdventure.Tests
 {
@@ -64,6 +65,91 @@ namespace FutharksAdventure.Tests
             _bus.Publish(new TestEvent());
 
             Assert.That(calls, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Subscribe_SameHandlerTwice_CallsItOnce()
+        {
+            int calls = 0;
+            void Handler(TestEvent e) => calls++;
+            _bus.Subscribe<TestEvent>(Handler);
+            _bus.Subscribe<TestEvent>(Handler);
+
+            _bus.Publish(new TestEvent());
+
+            Assert.That(calls, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Subscribe_SameHandlerTwice_ThenUnsubscribeOnce_StopsReceiving()
+        {
+            int calls = 0;
+            void Handler(TestEvent e) => calls++;
+            _bus.Subscribe<TestEvent>(Handler);
+            _bus.Subscribe<TestEvent>(Handler);
+            _bus.Unsubscribe<TestEvent>(Handler);
+
+            _bus.Publish(new TestEvent());
+
+            Assert.That(calls, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Subscribe_NullHandler_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => _bus.Subscribe<TestEvent>(null));
+        }
+
+        [Test]
+        public void Unsubscribe_NullHandler_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => _bus.Unsubscribe<TestEvent>(null));
+        }
+
+        [Test]
+        public void Unsubscribe_TypeNeverSubscribed_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => _bus.Unsubscribe<OtherEvent>(_ => { }));
+        }
+
+        [Test]
+        public void Unsubscribe_UnknownHandler_KeepsOtherSubscribers()
+        {
+            int calls = 0;
+            _bus.Subscribe<TestEvent>(_ => calls++);
+
+            _bus.Unsubscribe<TestEvent>(_ => { });
+            _bus.Publish(new TestEvent());
+
+            Assert.That(calls, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Unsubscribe_DuringPublish_DoesNotThrowAndStopsNextPublish()
+        {
+            int calls = 0;
+            void Handler(TestEvent e) { calls++; _bus.Unsubscribe<TestEvent>(Handler); }
+            _bus.Subscribe<TestEvent>(Handler);
+
+            Assert.DoesNotThrow(() => _bus.Publish(new TestEvent()));
+            _bus.Publish(new TestEvent());
+
+            Assert.That(calls, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Subscribe_DuringPublish_NewHandlerCalledFromNextPublishOnly()
+        {
+            int lateCalls = 0;
+            void Late(TestEvent e) => lateCalls++;
+            void Early(TestEvent e) => _bus.Subscribe<TestEvent>(Late);
+            _bus.Subscribe<TestEvent>(Early);
+
+            Assert.DoesNotThrow(() => _bus.Publish(new TestEvent()));
+            Assert.That(lateCalls, Is.EqualTo(0));
+
+            _bus.Publish(new TestEvent());
+            Assert.That(lateCalls, Is.EqualTo(1));
         }
     }
 }

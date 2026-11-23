@@ -1,6 +1,8 @@
 
 
 
+using System;
+
 namespace FutharksAdventure.Core
 {
     public class TurnManager
@@ -11,6 +13,13 @@ namespace FutharksAdventure.Core
 
         public TurnManager(Player player, IntentResolver resolver, EventBus eventBus)
         {
+            if (player is null)
+                throw new ArgumentNullException(nameof(player));
+            if (resolver is null)
+                throw new ArgumentNullException(nameof(resolver));
+            if (eventBus is null)
+                throw new ArgumentNullException(nameof(eventBus));
+
             _player = player;
             _resolver = resolver;
             _eventBus = eventBus;

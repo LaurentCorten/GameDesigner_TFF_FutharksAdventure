@@ -14,6 +14,9 @@ namespace FutharksAdventure.Core
 
         public FloorGrid (int width, int height)
         {
+            if (width <= 0) throw new ArgumentOutOfRangeException ("width");
+            if (height <= 0) throw new ArgumentOutOfRangeException ("height");
+
             Width = width;
             Height = height;
 
