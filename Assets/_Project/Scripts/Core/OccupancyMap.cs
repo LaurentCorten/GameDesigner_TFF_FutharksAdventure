@@ -37,7 +37,7 @@ namespace FutharksAdventure.Core
         /// <exception cref="InvalidOperationException"></exception>
         public void Place(Entity entity, GridPosition position)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (entity is null) throw new ArgumentNullException(nameof(entity));
             if (IsOccupied(position))
                 throw new InvalidOperationException("La position visée est déjà occupée");
             if (IsPlaced(entity))
@@ -56,7 +56,7 @@ namespace FutharksAdventure.Core
         /// <exception cref="InvalidOperationException"></exception>
         public void Move(Entity entity, GridPosition position)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (entity is null) throw new ArgumentNullException(nameof(entity));
             if (IsOccupied(position))
                 throw new InvalidOperationException("La position visée est déjà occupée");
             if (!IsPlaced(entity))

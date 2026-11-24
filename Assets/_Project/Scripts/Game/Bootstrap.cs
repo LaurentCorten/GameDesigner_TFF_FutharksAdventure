@@ -13,7 +13,11 @@ namespace FutharksAdventure.Game
     {
         [SerializeField] private GridView _gridView;
         [SerializeField] private EntityView _playerPrefab;
-        [SerializeField] CinemachineCamera _cinemachineCamera;
+        [SerializeField] private CinemachineCamera _cinemachineCamera;
+        [SerializeField] private PlayerConfig _playerConfig;
+
+        [Header("TEMPORARY DEBUG")]
+        [SerializeField] private GameCheck _gameCheck;
 
         private EventBus _eventBus;
         private FutharksInputMap _inputMap;
@@ -27,7 +31,7 @@ namespace FutharksAdventure.Game
         private void Awake()
         {
             _inputMap = new FutharksInputMap();
-            _player = new Player();
+            _player = InstantiatePlayer();
 
             _eventBus = new EventBus();
             _occupancyMap = new OccupancyMap();
@@ -35,6 +39,11 @@ namespace FutharksAdventure.Game
             _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus);
             _turnManager = new TurnManager(_player, _intentResolver, _eventBus);
             _inputController = new InputController(_inputMap, _turnManager);
+
+            // TEMPORARY
+            if(_gameCheck != null)
+                _gameCheck.Init(_eventBus, _player);
+            Debug.Log($"Player has now {_player.CurrentHealth}/{_player.MaxHealth} PV, {_player.Food} pieces of food and {_player.Hatchets} hatchets.");
         }
 
         private void Start()
@@ -81,6 +90,14 @@ namespace FutharksAdventure.Game
             floor.SetTileType(new GridPosition(18, 5), TileType.Exit);
 
             return floor;
+        }
+
+        private Player InstantiatePlayer()
+        {
+            if (_playerConfig == null)
+                throw new ArgumentNullException(nameof(_playerConfig));
+
+            return new Player(_playerConfig.MaxHealth, _playerConfig.Food, _playerConfig.Hatchets, _playerConfig.VisionRange);
         }
 
         // TEMPORARY

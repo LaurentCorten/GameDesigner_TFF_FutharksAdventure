@@ -16,11 +16,18 @@ namespace FutharksAdventure.Core
         /// <summary>Abonne une methode aux evenements de type T.</summary>
         public void Subscribe<T>(Action<T> handler) where T : struct
         {
+            if (handler is null)
+                throw new ArgumentNullException(nameof(handler));
+
             if(!_subscribers.TryGetValue(typeof(T), out List<Delegate> handlers))
             {
                 handlers = new List<Delegate>();
                 _subscribers.Add(typeof(T), handlers);
             }
+
+            if (handlers.Contains(handler))
+                return;
+
             handlers.Add(handler);
         }
 
@@ -44,6 +51,9 @@ namespace FutharksAdventure.Core
         /// <summary>Desabonne une methode des evenements de type T.</summary>
         public void Unsubscribe<T>(Action<T> handler) where T : struct
         {
+            if (handler is null)
+                throw new ArgumentNullException(nameof(handler));
+
             if (_subscribers.TryGetValue(typeof(T), out List<Delegate> handlers))
             {
                 handlers.Remove(handler);

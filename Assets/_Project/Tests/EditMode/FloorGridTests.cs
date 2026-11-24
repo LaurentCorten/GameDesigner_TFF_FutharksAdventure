@@ -120,5 +120,14 @@ namespace FutharksAdventure.Tests
 
             Assert.IsFalse(grid.IsWalkable(new GridPosition(x, y)));
         }
+
+        [TestCase(0, 4)]
+        [TestCase(6, 0)]
+        [TestCase(-1, 4)]
+        [TestCase(6, -1)]
+        public void Constructor_NonPositiveSize_Throws(int width, int height)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => new FloorGrid(width, height));
+        }
     }
 }
