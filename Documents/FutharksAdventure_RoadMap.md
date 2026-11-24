@@ -53,7 +53,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] GridPosition, TileType, FloorGrid
 - [x] (T) Tests verts
 
-### 2.2 Vue de grille (Game)
+### 2.2 Vue de grille (Game) [termine]
 - [x] GridView : dessine TOUTE la FloorGrid dans un Tilemap (placeholders carres de couleur)
 - [x] Etage de test code en dur (en attendant la generation procedurale de la Phase 5)
 - [x] Convention : 1 case = 1 unite Unity
@@ -61,7 +61,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] Hors grille : fond uni (case Empty)
 - [x] (V) l’etage de test s’affiche en entier, correctement oriente
 
-### 2.3 Systeme de tours (Core)
+### 2.3 Systeme de tours (Core) [termine]
 - [x] (D) Seance de conception : tours, actions, deplacement, occupation des cases (avant tout code)
 - [x] Direction : enum 4 directions cardinales + conversion en decalage GridPosition
 - [x] EventBus : instance injectee (pas statique), Subscribe / Unsubscribe / Publish generiques
@@ -73,7 +73,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] TurnManager : action acceptee = tour resolu, publie TurnResolved ; refus = rien ne se passe
 - [x] (T) Direction, EventBus, OccupancyMap, MoveAction, IntentResolver, TurnManager
 
-### 2.4 Input, affichage des entites, camera, Bootstrap
+### 2.4 Input, affichage des entites, camera, Bootstrap [termine]
 - [x] Input Actions asset - Action Map Gameplay : Move, RangedAttack
 - [x] Lecture de l'input (clavier : fleches / ZQSD / WASD / pave num) ; la logique ne connait que des actions abstraites
 - [x] EntityView : composant generique d'affichage d'une entite (joueur pour l'instant), deplacement instantane
@@ -81,7 +81,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] Bootstrap : cree la grille, le joueur, l'input, le TurnManager, les vues, et les relie
 - [x] (V) Le carre se deplace case par case, bloque par les murs, la camera le suit
 
-### 2.5 Review de fin de phase
+### 2.5 Review de fin de phase [termine]
 - [x] Review globale de la structure, des scripts et des tests
 - [x] (T) IntentResolverTests reactives ; asmdef Tests renomme FutharksAdventure.Tests
 - [x] EventBus : double abonnement ignore, handler null refuse
@@ -97,28 +97,32 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 
 ## Phase 3 - Le joueur (S2)
 
-### 3.1 Stats et ressources
-- [x] PlayerStats (Core) : PV, PV max, nourriture, hachettes, VisionRange
-- [x] Config de depart (SO) : PV 17, nourriture 150, hachettes 3, VisionRange 6
-- [x] Cout du tour : -1 nourriture ; a 0 : -1 PV par tour
-- [x] Evenement PlayerDied
-- [x] (T) Consommation, famine, mort par famine sans ennemi
+### 3.1 Stats et ressources [termine]
+- [x] Creature : Entity (Core) : PV, PV max, VisionRange, TakeDamage, IsDead (deduit des PV)
+- [x] Player : Creature : nourriture, hachettes, TryConsumeFood
+- [x] (D) VisionRange porte par Creature : remplace detectionDistance des ennemis
+- [x] PlayerConfig (SO) lu par Bootstrap : PV 17, nourriture 150, hachettes 3, VisionRange 6
+- [x] Cout du tour : -1 nourriture ; a 0 : -1 PV par tour (le tour qui mange la derniere nourriture ne coute pas de PV)
+- [x] Evenements FoodChanged (Current), HealthChanged (Creature, Amount), PlayerDied
+- [x] Ordre : EntityMoved -> FoodChanged | HealthChanged -> PlayerDied -> TurnResolved
+- [x] Garde : joueur mort -> SubmitMove refuse silencieusement
+- [x] (T) Consommation, famine, mort par famine sans ennemi ; TestFactory.CreatePlayer pour les tests
 - [x] (D) Techno UI : uGUI (Canvas + TextMeshPro)
-- [x] (D) Orchestration du tour : etapes explicites dans TurnManager ou abonnement a TurnResolved
-- [x] HUD : squelette du HUD final (visuels provisoires) abonne aux evenements : PV, nourriture
+- [x] (D) Orchestration du tour : etapes explicites dans TurnManager (action -> cout du tour -> TurnResolved)
+- [x] HUD : squelette du HUD final ; PV, nourriture, hachettes rafraichis sur TurnResolved
 - [x] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
 
 ### 3.2 Combat
-- [ ] Sante (TakeDamage, IsDead) partagee joueur / ennemis
+- [ ] (D) Ou vit la logique "degats + HealthChanged + PlayerDied" (aujourd'hui privee dans TurnManager) pour qu'AttackAction la reutilise
 - [ ] Attaque melee : MoveAction vers une case ennemie => AttackAction
 - [ ] Degats fixes, toujours touche (le test de touche est un ajout de palier)
 - [ ] ThrowAction + selection automatique de cible (regles GDD 4.5) :
-      alignement 4 axes, portee = VisionRange (carre), ligne de visee non bloquee par un mur,
+      alignement 4 axes, portee = VisionRange (carre), ligne de visee non blogit pushquee par un mur,
       pas de case adjacente, plus proche, egalite -> cible precedente, sinon moins de PV
       (D) egalite de PV aussi : premier de la liste en attendant
 - [ ] Aucune cible ou stock vide : action refusee, aucun tour, aucune hachette perdue
 - [ ] (D) Entree du TurnManager : une methode Submit par action ou Submit(intent)
-- [ ] HUD : compteur de hachettes
+- [ ] HUD : le compteur de hachettes (deja affiche) diminue au lancer
 - [ ] (V) Le stock de hachettes diminue a l'ecran, refus visible sans tour consomme
 - [ ] (T) Un test par regle du tableau 4.5
 
@@ -141,12 +145,13 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 
 - [ ] (D) Algorithme de deplacement vers le joueur (a discuter : BFS ou plus simple)
 - [ ] Cerveau d'ennemi (strategie par comportement) : Chaser, Wanderer ; Ranged (+)
-- [ ] EnemyData (SO) : nom, PV, degats, detectionDistance, randomStepChance, score, drop
+- [ ] EnemyData (SO) : nom, PV, degats, VisionRange, randomStepChance, score, drop
 - [ ] 2 types de monstres garantis aux stats distinctes ; 3e type (+)
 - [ ] 1 action par tour : deplacement OU attaque ; conflit de case : premier de la liste gagne
 - [ ] Mort : retire de la grille, evenement (score plus tard)
 - [ ] EntityView reutilisee pour les ennemis (apparition, deplacement, disparition)
 - [ ] (T) Detection, poursuite, attaque, mort ; aucun ennemi ne traverse un mur ou un autre ennemi
+- [ ] (T) Deux ennemis frappent un joueur mourant dans le meme tour : un seul PlayerDied (condition = passage vivant -> mort)
 - [ ] (V) Combat jouable a l'ecran, famine fonctionnelle
 
 ---
@@ -214,6 +219,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [ ] Menu principal : Nouvelle run, Leaderboard, Quitter
 - [ ] Menu pause : reprendre, abandonner, quitter
 - [ ] Ecran de fin : resultat, cause, score, position au leaderboard, rejouer / menu
+- [ ] Mort du joueur : sortie de l'etat Run, desactivation de la map Gameplay
 - [ ] (V) Plusieurs runs enchainees sans relancer le jeu, tout est remis a zero
 
 ---
@@ -227,6 +233,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [ ] Retours visuels : degats, mort, ramassage
 - [ ] Sons minimum : pas, coup porte, coup recu, ramassage, mort, musique ; (+) ambiances
 - [ ] Police et cadres (verifier les licences)
+- [ ] Verifier le HUD avec les animations : il lit les valeurs actuelles de la Creature, pas celles du moment de l'evenement
 - [ ] (V) Le jeu est lisible : joueur, ennemis, loot, sortie identifiables d'un coup d'oeil
 
 ---
@@ -250,7 +257,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - Palier 3 : lootables de score
 - Palier 4 : grandes potions, plus de sorts
 - Palier 5 : familiers
-- Palier a definir : test de touche (Dex), support manette
+- Palier a definir : test de touche (Dex), support manette, refacto des inputs directionnels en actions Button plutot que Value
 
 ## Hors scope de la slice
 
