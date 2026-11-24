@@ -105,8 +105,8 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (T) Consommation, famine, mort par famine sans ennemi
 - [x] (D) Techno UI : uGUI (Canvas + TextMeshPro)
 - [x] (D) Orchestration du tour : etapes explicites dans TurnManager ou abonnement a TurnResolved
-- [ ] HUD : squelette du HUD final (visuels provisoires) abonne aux evenements : PV, nourriture
-- [ ] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
+- [x] HUD : squelette du HUD final (visuels provisoires) abonne aux evenements : PV, nourriture
+- [x] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
 
 ### 3.2 Combat
 - [ ] Sante (TakeDamage, IsDead) partagee joueur / ennemis
