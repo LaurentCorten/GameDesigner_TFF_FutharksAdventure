@@ -15,7 +15,7 @@ namespace FutharksAdventure.Tests
         {
             _occupancy = new OccupancyMap();
             _resolver = new IntentResolver(TestFloors.CreateRoom3x3(), _occupancy, new EventBus());
-            _player = new Player(10,10);
+            _player = TestFactory.CreatePlayer(10, 10);
             _occupancy.Place(_player, new GridPosition(2, 2));
         }
 

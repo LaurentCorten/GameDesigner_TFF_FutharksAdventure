@@ -8,12 +8,15 @@ namespace FutharksAdventure.Core
     {
 
         public int Food { get; private set; }
+        public int Hatchets { get; private set; }
 
-        public Player(int maxHealth, int food) : base(maxHealth)
+        public Player(int maxHealth, int food, int hatchets, int visionRange) : base(maxHealth, visionRange)
         {
-            if (food < 0) throw new ArgumentOutOfRangeException(nameof(food));
+            if(food < 0) throw new ArgumentOutOfRangeException(nameof(food));
+            if(hatchets < 0) throw new ArgumentOutOfRangeException(nameof(hatchets));
 
             Food = food;
+            Hatchets = hatchets;
         }
 
         public bool TryConsumeFood()

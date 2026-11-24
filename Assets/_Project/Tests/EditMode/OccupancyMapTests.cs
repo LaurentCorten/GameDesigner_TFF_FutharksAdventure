@@ -13,7 +13,7 @@ namespace FutharksAdventure.Tests
         public void SetUp()
         {
             _map = new OccupancyMap();
-            _player = new Player(10, 10);
+            _player = TestFactory.CreatePlayer(10, 10);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace FutharksAdventure.Tests
             var pos = new GridPosition(1, 1);
             _map.Place(_player, pos);
 
-            Assert.Throws<InvalidOperationException>(() => _map.Place(new Player(10, 10), pos));
+            Assert.Throws<InvalidOperationException>(() => _map.Place(TestFactory.CreatePlayer(10, 10), pos));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Move_ToOccupiedCell_Throws()
         {
-            var other = new Player(10, 10);
+            var other = TestFactory.CreatePlayer(10, 10);
             _map.Place(_player, new GridPosition(1, 1));
             _map.Place(other, new GridPosition(1, 2));
 

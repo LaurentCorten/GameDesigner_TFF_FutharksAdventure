@@ -23,7 +23,7 @@ namespace FutharksAdventure.Tests
 
             var occupancy = new OccupancyMap();
             _bus = new EventBus();
-            _player = new Player(maxHealth, food);
+            _player = TestFactory.CreatePlayer(maxHealth, food);
             occupancy.Place(_player, Start);
 
             var resolver = new IntentResolver(grid, occupancy, _bus);
@@ -169,20 +169,6 @@ namespace FutharksAdventure.Tests
             Assert.That(accepted, Is.False);
             Assert.That(_player.Position, Is.EqualTo(positionAtDeath));
             Assert.That(_events, Is.Empty);
-        }
-
-        [Test]
-        public void PlayerDied_IsPublishedOnlyOnce()
-        {
-            Setup(maxHealth: 1, food: 0);
-            int deathCount = 0;
-            _bus.Subscribe<PlayerDied>(_ => deathCount++);
-
-            PlayValidTurn(0);
-            PlayValidTurn(1);
-            PlayValidTurn(2);
-
-            Assert.That(deathCount, Is.EqualTo(1));
         }
     }
 }

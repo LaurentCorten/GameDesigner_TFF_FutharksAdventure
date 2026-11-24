@@ -8,14 +8,17 @@ namespace FutharksAdventure.Core
 
         public int MaxHealth {  get; }
         public int CurrentHealth { get; private set; }
+        public int VisionRange { get; }
         public bool IsDead { get; private set; }
 
-        public Creature(int maxHealth)
+        public Creature(int maxHealth, int visionRange)
         {
             if(maxHealth <= 0) throw new ArgumentOutOfRangeException(nameof(maxHealth));
+            if (visionRange <= 0) throw new ArgumentOutOfRangeException(nameof(visionRange));
 
             MaxHealth = maxHealth;
             CurrentHealth = maxHealth;
+            VisionRange = visionRange;
             IsDead = false;
         }
 

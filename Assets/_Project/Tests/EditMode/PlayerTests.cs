@@ -11,11 +11,13 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Constructor_SetsStartingValues()
         {
-            var player = new Player(17, 150);
+            var player = new Player(17, 150, 3, 6);
 
             Assert.That(player.MaxHealth, Is.EqualTo(17));
             Assert.That(player.CurrentHealth, Is.EqualTo(17));
             Assert.That(player.Food, Is.EqualTo(150));
+            Assert.That(player.Hatchets, Is.EqualTo(3));
+            Assert.That(player.VisionRange, Is.EqualTo(6));
             Assert.That(player.IsDead, Is.False);
         }
 
@@ -23,21 +25,42 @@ namespace FutharksAdventure.Tests
         [TestCase(-1)]
         public void Constructor_MaxHealthNotPositive_Throws(int maxHealth)
         {
-            Assert.That(() => new Player(maxHealth, 150),
+            Assert.That(() => new Player(maxHealth, 150, 3, 6),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Constructor_NegativeFood_Throws()
         {
-            Assert.That(() => new Player(17, -1),
+            Assert.That(() => new Player(17, -1, 3, 6),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Constructor_ZeroFood_IsAllowed()
         {
-            Assert.That(() => new Player(17, 0), Throws.Nothing);
+            Assert.That(() => new Player(17, 0, 3, 6), Throws.Nothing);
+        }
+
+        [Test]
+        public void Constructor_NegativeHatchets_Throws()
+        {
+            Assert.That(() => new Player(17, 150, -1, 6),
+                Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void Constructor_ZeroHatchets_IsAllowed()
+        {
+            Assert.That(() => new Player(17, 150, 0, 6), Throws.Nothing);
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void Constructor_VisionRangeNotPositive_Throws(int visionRange)
+        {
+            Assert.That(() => new Player(17, 150, 3, visionRange),
+                Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         // --- TakeDamage (Creature) ---
@@ -45,7 +68,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TakeDamage_ReducesCurrentHealth()
         {
-            var player = new Player(17, 150);
+            var player = TestFactory.CreatePlayer(17, 150);
 
             player.TakeDamage(5);
 
@@ -56,7 +79,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TakeDamage_Zero_ChangesNothing()
         {
-            var player = new Player(17, 150);
+            var player = TestFactory.CreatePlayer(17, 150);
 
             player.TakeDamage(0);
 
@@ -66,7 +89,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TakeDamage_Negative_Throws()
         {
-            var player = new Player(17, 150);
+            var player = TestFactory.CreatePlayer(17, 150);
 
             Assert.That(() => player.TakeDamage(-1),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
@@ -75,7 +98,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TakeDamage_ExactlyCurrentHealth_IsDead()
         {
-            var player = new Player(17, 150);
+            var player = TestFactory.CreatePlayer(17, 150);
 
             player.TakeDamage(17);
 
@@ -86,7 +109,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TakeDamage_MoreThanCurrentHealth_ClampsAtZero()
         {
-            var player = new Player(17, 150);
+            var player = TestFactory.CreatePlayer(17, 150);
 
             player.TakeDamage(50);
 
@@ -99,7 +122,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TryConsumeFood_WithFood_RemovesOneAndReturnsTrue()
         {
-            var player = new Player(17, 150);
+            var player = TestFactory.CreatePlayer(17, 150);
 
             bool consumed = player.TryConsumeFood();
 
@@ -110,7 +133,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TryConsumeFood_WithoutFood_ReturnsFalseAndStaysAtZero()
         {
-            var player = new Player(17, 0);
+            var player = TestFactory.CreatePlayer(17, 0);
 
             bool consumed = player.TryConsumeFood();
 

@@ -20,7 +20,7 @@ namespace FutharksAdventure.Tests
             _grid = TestFloors.CreateRoom3x3();
             _occupancy = new OccupancyMap();
             _bus = new EventBus();
-            _player = new Player(10, 10);
+            _player = TestFactory.CreatePlayer(10, 10);
             _occupancy.Place(_player, Center);
         }
 
@@ -44,7 +44,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void CanExecute_TowardOccupiedCell_ReturnsFalse()
         {
-            _occupancy.Place(new Player(10, 10), NorthOfCenter);
+            _occupancy.Place(TestFactory.CreatePlayer(10, 10), NorthOfCenter);
 
             Assert.That(CreateMove(Direction.North).CanExecute(), Is.False);
         }
@@ -117,7 +117,7 @@ namespace FutharksAdventure.Tests
         {
             var move = CreateMove(Direction.North);             // cible (2,3)
             _occupancy.Move(_player, new GridPosition(1, 2));
-            _occupancy.Place(new Player(10, 10), NorthOfCenter);      // la cible est maintenant occupee
+            _occupancy.Place(TestFactory.CreatePlayer(10, 10), NorthOfCenter);      // la cible est maintenant occupee
 
             Assert.Throws<InvalidOperationException>(() => move.TryExecute());
         }
@@ -127,7 +127,7 @@ namespace FutharksAdventure.Tests
         {
             var grid = new FloorGrid(1, 2);
             grid.SetTileType(new GridPosition(0, 1), TileType.Floor);
-            var unplaced = new Player(10, 10); // Position par defaut (0,0), absente de la carte
+            var unplaced = TestFactory.CreatePlayer(10, 10); // Position par defaut (0,0), absente de la carte
 
             var move = new MoveAction(unplaced, Direction.North, grid, new OccupancyMap(), _bus);
 
@@ -140,7 +140,7 @@ namespace FutharksAdventure.Tests
             var grid = new FloorGrid(1, 1);
             grid.SetTileType(new GridPosition(0, 0), TileType.Floor);
             var occupancy = new OccupancyMap();
-            var player = new Player(10, 10);
+            var player = TestFactory.CreatePlayer(10, 10);
             occupancy.Place(player, new GridPosition(0, 0));
 
             var move = new MoveAction(player, Direction.West, grid, occupancy, _bus);

@@ -27,7 +27,7 @@ namespace FutharksAdventure.Game
         private void Awake()
         {
             _inputMap = new FutharksInputMap();
-            _player = new Player(10, 10); //TEMPORARY
+            _player = new Player(10, 10, 3, 6); //TEMPORARY
 
             _eventBus = new EventBus();
             _occupancyMap = new OccupancyMap();

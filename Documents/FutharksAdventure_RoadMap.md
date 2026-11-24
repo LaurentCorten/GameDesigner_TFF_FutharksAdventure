@@ -98,8 +98,8 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 ## Phase 3 - Le joueur (S2)
 
 ### 3.1 Stats et ressources
-- [ ] PlayerStats (Core) : PV, PV max, nourriture, hachettes, VisionRange
-- [ ] Config de depart (SO) : PV 17, nourriture 150, hachettes 3, VisionRange (D valeur)
+- [x] PlayerStats (Core) : PV, PV max, nourriture, hachettes, VisionRange
+- [ ] Config de depart (SO) : PV 17, nourriture 150, hachettes 3, VisionRange 6
 - [ ] Cout du tour : -1 nourriture ; a 0 : -1 PV par tour
 - [ ] Evenement PlayerDied
 - [ ] (T) Consommation, famine, mort par famine sans ennemi
