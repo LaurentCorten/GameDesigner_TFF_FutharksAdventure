@@ -118,8 +118,7 @@ namespace FutharksAdventure.Tests
             PlayValidTurn(0);
 
             Assert.That(received.Creature, Is.SameAs(_player));
-            Assert.That(received.Current, Is.EqualTo(9));
-            Assert.That(received.Max, Is.EqualTo(10));
+            Assert.That(received.Amount, Is.EqualTo(-1));
             Assert.That(_events, Does.Not.Contain(nameof(FoodChanged)));
         }
 

@@ -30,7 +30,14 @@ namespace FutharksAdventure.Core
     public readonly struct HealthChanged
     {
         public Creature Creature { get; }
-        public int Current { get; }
-        public 
+        public int Amount { get; }
+
+        public HealthChanged(Creature creature, int amount)
+        {
+            Creature = creature;
+            Amount = amount;
+        }
     }
+
+    public readonly struct PlayerDied { }
 }

@@ -27,13 +27,40 @@ namespace FutharksAdventure.Core
 
         public bool SubmitMove(Direction direction)
         {
-            GameAction action = _resolver.Resolve(_player, direction);
-            
-            if(!action.TryExecute())
+            if (_player.IsDead)
                 return false;
-            
-            _eventBus.Publish(new TurnResolved());
+
+            GameAction action = _resolver.Resolve(_player, direction);
+
+            if (!action.TryExecute())
+                return false;
+
+            ExecuteTurn();
+
             return true;
+        }
+
+        private void ExecuteTurn()
+        {
+            ConsumeTurnCost();
+            _eventBus.Publish(new TurnResolved());
+        }
+
+        private void ConsumeTurnCost()
+        {
+            if (_player.TryConsumeFood())
+                _eventBus.Publish(new FoodChanged(_player.Food));
+            else
+                ConsumeHealth(_player, 1);
+        }
+
+        private void ConsumeHealth(Creature creature, int amount)
+        {
+            creature.TakeDamage(amount);
+            _eventBus.Publish(new HealthChanged(creature, -amount));
+
+            if (creature.IsDead && creature==_player)
+                _eventBus.Publish(new PlayerDied());
         }
     }
 }
