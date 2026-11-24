@@ -99,12 +99,12 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 
 ### 3.1 Stats et ressources
 - [x] PlayerStats (Core) : PV, PV max, nourriture, hachettes, VisionRange
-- [ ] Config de depart (SO) : PV 17, nourriture 150, hachettes 3, VisionRange 6
-- [ ] Cout du tour : -1 nourriture ; a 0 : -1 PV par tour
-- [ ] Evenement PlayerDied
-- [ ] (T) Consommation, famine, mort par famine sans ennemi
+- [x] Config de depart (SO) : PV 17, nourriture 150, hachettes 3, VisionRange 6
+- [x] Cout du tour : -1 nourriture ; a 0 : -1 PV par tour
+- [x] Evenement PlayerDied
+- [x] (T) Consommation, famine, mort par famine sans ennemi
 - [x] (D) Techno UI : uGUI (Canvas + TextMeshPro)
-- [ ] (D) Orchestration du tour : etapes explicites dans TurnManager ou abonnement a TurnResolved
+- [x] (D) Orchestration du tour : etapes explicites dans TurnManager ou abonnement a TurnResolved
 - [ ] HUD : squelette du HUD final (visuels provisoires) abonne aux evenements : PV, nourriture
 - [ ] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
 
