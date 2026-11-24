@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: FutharksAdventure.Game::FutharksAdventure.Game.PlayerConfig
   _maxHealth: 17
-  _food: 150
+  _food: 15
   _hatchets: 3
   _visionRange: 6

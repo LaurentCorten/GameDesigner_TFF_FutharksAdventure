@@ -15,6 +15,7 @@ namespace FutharksAdventure.Game
         [SerializeField] private EntityView _playerPrefab;
         [SerializeField] private CinemachineCamera _cinemachineCamera;
         [SerializeField] private PlayerConfig _playerConfig;
+        [SerializeField] private PlayerStatsDisplay _playerStatsDisplay;
 
         [Header("TEMPORARY DEBUG")]
         [SerializeField] private GameCheck _gameCheck;
@@ -39,6 +40,7 @@ namespace FutharksAdventure.Game
             _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus);
             _turnManager = new TurnManager(_player, _intentResolver, _eventBus);
             _inputController = new InputController(_inputMap, _turnManager);
+            _playerStatsDisplay.Init(_eventBus, _player);
 
             // TEMPORARY
             if(_gameCheck != null)
