@@ -11,7 +11,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Constructor_SetsStartingValues()
         {
-            var player = new Player(17, 150, 3, 6);
+            var player = new Player(17, 150, 3, 6, 4);
 
             Assert.That(player.MaxHealth, Is.EqualTo(17));
             Assert.That(player.CurrentHealth, Is.EqualTo(17));
@@ -19,52 +19,59 @@ namespace FutharksAdventure.Tests
             Assert.That(player.Hatchets, Is.EqualTo(3));
             Assert.That(player.VisionRange, Is.EqualTo(6));
             Assert.That(player.IsDead, Is.False);
+            Assert.That(player.AttackDamage, Is.EqualTo(4));
         }
 
         [TestCase(0)]
         [TestCase(-1)]
         public void Constructor_MaxHealthNotPositive_Throws(int maxHealth)
         {
-            Assert.That(() => new Player(maxHealth, 150, 3, 6),
+            Assert.That(() => new Player(maxHealth, 150, 3, 6, 4),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Constructor_NegativeFood_Throws()
         {
-            Assert.That(() => new Player(17, -1, 3, 6),
+            Assert.That(() => new Player(17, -1, 3, 6, 4),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Constructor_ZeroFood_IsAllowed()
         {
-            Assert.That(() => new Player(17, 0, 3, 6), Throws.Nothing);
+            Assert.That(() => new Player(17, 0, 3, 6, 4), Throws.Nothing);
         }
 
         [Test]
         public void Constructor_NegativeHatchets_Throws()
         {
-            Assert.That(() => new Player(17, 150, -1, 6),
+            Assert.That(() => new Player(17, 150, -1, 6, 4),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void Constructor_ZeroHatchets_IsAllowed()
         {
-            Assert.That(() => new Player(17, 150, 0, 6), Throws.Nothing);
+            Assert.That(() => new Player(17, 150, 0, 6, 4), Throws.Nothing);
         }
 
         [TestCase(0)]
         [TestCase(-1)]
         public void Constructor_VisionRangeNotPositive_Throws(int visionRange)
         {
-            Assert.That(() => new Player(17, 150, 3, visionRange),
+            Assert.That(() => new Player(17, 150, 3, visionRange, 4),
+                Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void Constructor_NegativeAttackDamage_Throws()
+        {
+            Assert.That(() => new Player(17, 150, 3, 6, -1),
                 Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         // --- TakeDamage (Creature) ---
-
         [Test]
         public void TakeDamage_ReducesCurrentHealth()
         {

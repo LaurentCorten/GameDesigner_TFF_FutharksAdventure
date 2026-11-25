@@ -1,8 +1,8 @@
-
-
-
 using System;
 using System.Collections.Generic;
+
+
+
 
 namespace FutharksAdventure.Core
 {
@@ -21,6 +21,10 @@ namespace FutharksAdventure.Core
             return _occupancyDico.ContainsKey(position);
         }
 
+        public Entity GetEntity(GridPosition position)
+        {
+            return _occupancyDico.GetValueOrDefault(position, null);
+        }
 
         private bool IsPlaced(Entity entity)
         {
@@ -66,7 +70,16 @@ namespace FutharksAdventure.Core
             _occupancyDico[position] = entity;
 
             entity.Position = position;
-            
+        }
+
+        public void Remove(Entity entity, GridPosition position)
+        {
+            if (entity is null) throw new ArgumentNullException(nameof(entity));
+            if (_occupancyDico.TryGetValue(position, out var occupant) && occupant == entity)
+                _occupancyDico.Remove(position);
+            else if (IsOccupied(position))
+                throw new InvalidOperationException("l'entité fournie ne correspond pas à celle enregistrée sur cette position");
+            else throw new InvalidOperationException("Il n'y a rien a enlever à cette position");
         }
     }
 }

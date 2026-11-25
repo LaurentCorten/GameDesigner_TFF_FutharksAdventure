@@ -23,9 +23,22 @@ namespace FutharksAdventure.Tests
             int maxHealth = 10,
             int food = 10,
             int hatchets = 3,
-            int visionRange = 6)
+            int visionRange = 6,
+            int atkDmg = 4)
+
+        {   
+            return new Player(maxHealth, food, hatchets, visionRange, atkDmg);
+        }
+
+        public static Creature CreateEnemy(
+            int maxHealth = 10,
+            int visionRange = 6,
+            int atkDmg = 3)
+
         {
-            return new Player(maxHealth, food, hatchets, visionRange);
+            return new Enemy(maxHealth, visionRange, atkDmg); // option A
         }
     }
+
+
 }
