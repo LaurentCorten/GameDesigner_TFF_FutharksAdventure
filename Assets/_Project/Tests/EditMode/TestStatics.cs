@@ -12,6 +12,14 @@ namespace FutharksAdventure.Tests
             return grid;
         }
 
+        // Grille 9x9 : piece de sol 7x7 de (1,1) a (7,7), centre (4,4), murs autour
+        public static FloorGrid CreateRoom7x7()
+        {
+            var grid = new FloorGrid(9, 9);
+            RoomCarver.CarveRoom(grid, new GridPosition(4, 4), 7, 7, Sides.None);
+            return grid;
+        }
+
         // Grille 5x3 : couloir praticable de (1,1) a (3,1).
         // Tout le reste est Empty, donc non praticable.
         public static FloorGrid CreateCorridor3x1()
@@ -50,7 +58,7 @@ namespace FutharksAdventure.Tests
 
     /// <summary>
     /// Petit monde de test deja assemble : grille, carte des occupants, bus,
-    /// resolver, TurnManager et joueur place.
+    /// gestion des degats, selection de cible, resolver, TurnManager et joueur place.
     /// Si l'assemblage change (nouvelle dependance), on ne corrige qu'ici.
     /// </summary>
     internal class TestWorld
@@ -59,6 +67,7 @@ namespace FutharksAdventure.Tests
         public OccupancyMap Occupancy { get; }
         public EventBus Bus { get; }
         public DamageHandler DamageHandler { get; }
+        public TargetSelector TargetSelector { get; }
         public IntentResolver Resolver { get; }
         public TurnManager TurnManager { get; }
         public Player Player { get; }
@@ -70,6 +79,7 @@ namespace FutharksAdventure.Tests
             Occupancy = new OccupancyMap();
             Bus = new EventBus();
             DamageHandler = new DamageHandler(Bus, Occupancy);
+            TargetSelector = new TargetSelector(Grid, Occupancy);
             Resolver = new IntentResolver(Grid, Occupancy, Bus, DamageHandler);
             TurnManager = new TurnManager(Player, Resolver, Bus, DamageHandler);
         }
