@@ -22,9 +22,20 @@ namespace FutharksAdventure.Core
             _eventBus = eventBus;
         }
 
-        public GameAction Resolve(Entity entity, Direction direction)
+        public GameAction Resolve(Creature creature, Direction direction)
         {
-            return new MoveAction(entity, direction, _grid, _occupancyMap, _eventBus);
+            if (creature is null) throw new ArgumentNullException();
+
+            GridPosition targetPosition = creature.Position + direction.ToGridOffset();
+            Entity occupant = _occupancyMap.GetEntity(targetPosition);
+
+            if(occupant is null)
+                return new MoveAction(creature, creature.Position, targetPosition, _grid, _occupancyMap, _eventBus);
+
+            if (occupant is Creature)
+                return new AttackAction(_eventBus, _occupancyMap, creature, (Creature)occupant, creature.Position, targetPosition);
+
+            return null;
         }
     }
 }

@@ -99,7 +99,7 @@ namespace FutharksAdventure.Game
             if (_playerConfig == null)
                 throw new ArgumentNullException(nameof(_playerConfig));
 
-            return new Player(_playerConfig.MaxHealth, _playerConfig.Food, _playerConfig.Hatchets, _playerConfig.VisionRange);
+            return new Player(_playerConfig.MaxHealth, _playerConfig.Food, _playerConfig.Hatchets, _playerConfig.VisionRange, _playerConfig.AttackDamage);
         }
 
         // TEMPORARY

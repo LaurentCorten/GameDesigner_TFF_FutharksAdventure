@@ -32,7 +32,7 @@ namespace FutharksAdventure.Core
 
             GameAction action = _resolver.Resolve(_player, direction);
 
-            if (!action.TryExecute())
+            if (action is null || !action.TryExecute())
                 return false;
 
             ExecuteTurn();
