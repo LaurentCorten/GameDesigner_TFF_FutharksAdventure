@@ -6,19 +6,27 @@ namespace FutharksAdventure.Tests
 {
     public class IntentResolverTests
     {
+        private TestWorld _world;
+        private FloorGrid _grid;
         private OccupancyMap _occupancy;
+        private EventBus _bus;
+        private DamageHandler _damageHandler;
         private IntentResolver _resolver;
         private Player _player;
+
         private static readonly GridPosition Center = new GridPosition(2, 2);
         private static readonly GridPosition East = new GridPosition(3, 2);
 
         [SetUp]
         public void SetUp()
         {
-            _occupancy = new OccupancyMap();
-            _resolver = new IntentResolver(TestFloors.CreateRoom3x3(), _occupancy, new EventBus());
-            _player = TestFactory.CreatePlayer(10, 10);
-            _occupancy.Place(_player, new GridPosition(2, 2));
+            _world = TestWorld.Create(TestFloors.CreateRoom3x3(), Center);
+            _grid = _world.Grid;
+            _occupancy = _world.Occupancy;
+            _bus = _world.Bus;
+            _damageHandler = _world.DamageHandler;
+            _resolver = _world.Resolver;
+            _player = _world.Player;
         }
 
         [Test]
@@ -38,30 +46,38 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Constructor_NullGrid_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new IntentResolver(null, _occupancy, new EventBus()));
+            Assert.Throws<ArgumentNullException>(() => new IntentResolver(null, _occupancy, _bus, _damageHandler));
         }
 
         [Test]
         public void Constructor_NullOccupancyMap_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new IntentResolver(TestFloors.CreateRoom3x3(), null, new EventBus()));
+            Assert.Throws<ArgumentNullException>(() => new IntentResolver(_grid, null, _bus, _damageHandler));
         }
 
         [Test]
         public void Constructor_NullEventBus_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new IntentResolver(TestFloors.CreateRoom3x3(), _occupancy, null));
+            Assert.Throws<ArgumentNullException>(() => new IntentResolver(_grid, _occupancy, null, _damageHandler));
         }
 
-        [Test] // passera tout seul une fois le constructeur de MoveAction protege
+        [Test]
+        public void Constructor_NullDamageHandler_Throws()
+        {
+            Assert.That(() => new IntentResolver(_grid, _occupancy, _bus, null),
+                Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
         public void Resolve_NullEntity_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => _resolver.Resolve(null, Direction.North));
         }
+
         [Test]
         public void Resolve_TowardCreature_ReturnsAttackAction()
         {
-            _occupancy.Place(TestFactory.CreateEnemy(), East);
+            _world.PlaceEnemy(East);
 
             Assert.That(_resolver.Resolve(_player, Direction.East), Is.InstanceOf<AttackAction>());
         }
@@ -69,8 +85,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Resolve_TowardCreature_ExecutedAction_DamagesOccupantWithoutMoving()
         {
-            var enemy = TestFactory.CreateEnemy(maxHealth: 10);
-            _occupancy.Place(enemy, East);
+            var enemy = _world.PlaceEnemy(East, maxHealth: 10);
 
             _resolver.Resolve(_player, Direction.East).TryExecute();
 
@@ -82,8 +97,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Resolve_Alone_ChangesNothing()
         {
-            var enemy = TestFactory.CreateEnemy(maxHealth: 10);
-            _occupancy.Place(enemy, East);
+            var enemy = _world.PlaceEnemy(East, maxHealth: 10);
 
             _resolver.Resolve(_player, Direction.East);
 

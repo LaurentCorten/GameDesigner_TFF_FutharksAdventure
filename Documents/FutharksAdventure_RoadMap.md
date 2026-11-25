@@ -113,9 +113,9 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
 
 ### 3.2 Combat
-- [ ] (D) Ou vit la logique "degats + HealthChanged + PlayerDied" (aujourd'hui privee dans TurnManager) pour qu'AttackAction la reutilise
-- [ ] Attaque melee : MoveAction vers une case ennemie => AttackAction
-- [ ] Degats fixes, toujours touche (le test de touche est un ajout de palier)
+- [x] (D) Ou vit la logique "degats + HealthChanged + PlayerDied" (aujourd'hui privee dans TurnManager) pour qu'AttackAction la reutilise
+- [x] Attaque melee : MoveAction vers une case ennemie => AttackAction
+- [x] Degats fixes, toujours touche (le test de touche est un ajout de palier)
 - [ ] ThrowAction + selection automatique de cible (regles GDD 4.5) :
       alignement 4 axes, portee = VisionRange (carre), ligne de visee non blogit pushquee par un mur,
       pas de case adjacente, plus proche, egalite -> cible precedente, sinon moins de PV

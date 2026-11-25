@@ -6,22 +6,19 @@ namespace FutharksAdventure.Core
 {
     public class AttackAction : GameAction
     {
-        private readonly EventBus _eventBus;
-        private readonly OccupancyMap _occupancyMap;
+        private readonly DamageHandler _damageHandler;
         private readonly Creature _attackingCreature;
         private readonly Creature _targetCreature;
         private readonly GridPosition _fromPosition;
         private readonly GridPosition _toPosition;
 
-        public AttackAction(EventBus eventBus, OccupancyMap occupancyMap, Creature attackingCreature, Creature targetCreature, GridPosition fromPosition, GridPosition toPosition)
+        public AttackAction(DamageHandler damageHandler, Creature attackingCreature, Creature targetCreature, GridPosition fromPosition, GridPosition toPosition)
         {
             if (attackingCreature is null) throw new ArgumentNullException(nameof(attackingCreature));
             if (targetCreature is null) throw new ArgumentNullException(nameof(targetCreature));
-            if (occupancyMap is null) throw new ArgumentNullException(nameof(occupancyMap));
-            if (eventBus is null) throw new ArgumentNullException(nameof(eventBus));
+            if (damageHandler is null) throw new ArgumentNullException(nameof(damageHandler));
 
-            _eventBus = eventBus;
-            _occupancyMap = occupancyMap;
+            _damageHandler = damageHandler;
             _attackingCreature = attackingCreature;
             _targetCreature = targetCreature;
             _fromPosition = fromPosition;
@@ -44,14 +41,9 @@ namespace FutharksAdventure.Core
         {
             if (_targetCreature.IsDead)
                 throw new InvalidOperationException("La cible est déjà morte, l'attaque n'aurait pas du pouvoir être relancée !");
+            
             int damage = _attackingCreature.AttackDamage; //TEMPORARY -> sera modulé par la def plus tard
-            _targetCreature.TakeDamage(damage);
-            _eventBus.Publish(new HealthChanged(_targetCreature, -damage));
-
-            if (_targetCreature.IsDead)
-                if (_targetCreature is Player)
-                    _eventBus.Publish(new PlayerDied());
-                else _occupancyMap.Remove(_targetCreature, _toPosition);
+            _damageHandler.ApplyDamage(_targetCreature, damage);
         }
     }
 }

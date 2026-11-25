@@ -13,21 +13,14 @@ namespace FutharksAdventure.Tests
         private TurnManager _turnManager;
         private List<string> _events;
 
-        // Couloir praticable de (1,1) a (3,1), le joueur part de (2,1).
-        // Tout le reste est Empty, donc non praticable.
+        // Couloir praticable de (1,1) a (3,1) (TestFloors.CreateCorridor3x1), le joueur part de (2,1).
         private void Setup(int maxHealth, int food)
         {
-            var grid = new FloorGrid(5, 3);
-            for (int x = 1; x <= 3; x++)
-                grid.SetTileType(new GridPosition(x, 1), TileType.Floor);
-
-            var occupancy = new OccupancyMap();
-            _bus = new EventBus();
-            _player = TestFactory.CreatePlayer(maxHealth, food);
-            occupancy.Place(_player, Start);
-
-            var resolver = new IntentResolver(grid, occupancy, _bus);
-            _turnManager = new TurnManager(_player, resolver, _bus);
+            var world = TestWorld.Create(TestFloors.CreateCorridor3x1(), Start,
+                TestFactory.CreatePlayer(maxHealth, food));
+            _bus = world.Bus;
+            _player = world.Player;
+            _turnManager = world.TurnManager;
 
             _events = new List<string>();
             _bus.Subscribe<EntityMoved>(_ => _events.Add(nameof(EntityMoved)));

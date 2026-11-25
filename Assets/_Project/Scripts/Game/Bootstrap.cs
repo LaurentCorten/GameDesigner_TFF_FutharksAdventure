@@ -28,6 +28,7 @@ namespace FutharksAdventure.Game
         private IntentResolver _intentResolver;
         private TurnManager _turnManager;
         private InputController _inputController;
+        private DamageHandler _damageHandler;
 
         private void Awake()
         {
@@ -36,9 +37,10 @@ namespace FutharksAdventure.Game
 
             _eventBus = new EventBus();
             _occupancyMap = new OccupancyMap();
+            _damageHandler = new DamageHandler(_eventBus, _occupancyMap);
             _floorGrid = BuildTestFloor();
-            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus);
-            _turnManager = new TurnManager(_player, _intentResolver, _eventBus);
+            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus, _damageHandler);
+            _turnManager = new TurnManager(_player, _intentResolver, _eventBus, _damageHandler);
             _inputController = new InputController(_inputMap, _turnManager);
             _playerStatsDisplay.Init(_eventBus, _player);
 
