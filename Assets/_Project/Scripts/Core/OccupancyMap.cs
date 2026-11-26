@@ -72,12 +72,12 @@ namespace FutharksAdventure.Core
             entity.Position = position;
         }
 
-        public void Remove(Entity entity, GridPosition position)
+        public void Remove(Entity entity)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
-            if (_occupancyDico.TryGetValue(position, out var occupant) && occupant == entity)
-                _occupancyDico.Remove(position);
-            else if (IsOccupied(position))
+            if (_occupancyDico.TryGetValue(entity.Position, out var occupant) && occupant == entity)
+                _occupancyDico.Remove(entity.Position);
+            else if (IsOccupied(entity.Position))
                 throw new InvalidOperationException("l'entité fournie ne correspond pas à celle enregistrée sur cette position");
             else throw new InvalidOperationException("Il n'y a rien a enlever à cette position");
         }

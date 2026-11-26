@@ -935,6 +935,8 @@ MonoBehaviour:
   _playerConfig: {fileID: 11400000, guid: 871bff2addb61b54eb0f6668663e3930, type: 2}
   _playerStatsDisplay: {fileID: 2045187338}
   _gameCheck: {fileID: 320668479}
+  _enemyPrefab: {fileID: 457474700422395832, guid: c402f78cf94999149aa70001c3f0aada, type: 3}
+  _mockEnemyConfig: {fileID: 11400000, guid: 266e4b253063e0741b6082085fc0fec0, type: 2}
 --- !u!4 &431645110
 Transform:
   m_ObjectHideFlags: 0
@@ -3216,7 +3218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.0711962, b: 0.9607843, a: 1}
+  m_Color: {r: 0.46540874, g: 0.0682877, b: 0.0073177004, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

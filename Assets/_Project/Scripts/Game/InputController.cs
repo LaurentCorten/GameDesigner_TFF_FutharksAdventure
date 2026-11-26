@@ -56,7 +56,10 @@ namespace FutharksAdventure.Game
 
         public void OnRangedAttack(InputAction.CallbackContext context)
         {
-            Debug.Log("Pew Pew");
+            if (!context.performed)
+                return;
+
+            _turnManager.SubmitThrow();
         }
     }
 }

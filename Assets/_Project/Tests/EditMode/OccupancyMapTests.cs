@@ -96,6 +96,7 @@ namespace FutharksAdventure.Tests
         }
 
         // --- GetEntity ---
+
         [Test]
         public void GetEntity_EmptyCell_ReturnsNull()
         {
@@ -128,7 +129,7 @@ namespace FutharksAdventure.Tests
             var pos = new GridPosition(1, 1);
             _map.Place(_player, pos);
 
-            _map.Remove(_player, pos);
+            _map.Remove(_player);
 
             Assert.That(_map.IsOccupied(pos), Is.False);
             Assert.That(_map.GetEntity(pos), Is.Null);
@@ -141,7 +142,7 @@ namespace FutharksAdventure.Tests
             _map.Place(_player, new GridPosition(1, 1));
             _map.Place(other, new GridPosition(1, 2));
 
-            _map.Remove(_player, new GridPosition(1, 1));
+            _map.Remove(_player);
 
             Assert.That(_map.GetEntity(new GridPosition(1, 2)), Is.SameAs(other));
         }
@@ -151,7 +152,7 @@ namespace FutharksAdventure.Tests
         {
             var pos = new GridPosition(1, 1);
             _map.Place(_player, pos);
-            _map.Remove(_player, pos);
+            _map.Remove(_player);
             var other = TestFactory.CreatePlayer();
 
             Assert.That(() => _map.Place(other, pos), Throws.Nothing);
@@ -162,7 +163,7 @@ namespace FutharksAdventure.Tests
         public void Remove_ThenMoveRemovedEntity_Throws()
         {
             _map.Place(_player, new GridPosition(1, 1));
-            _map.Remove(_player, new GridPosition(1, 1));
+            _map.Remove(_player);
 
             Assert.That(() => _map.Move(_player, new GridPosition(1, 2)),
                 Throws.TypeOf<InvalidOperationException>());
@@ -171,36 +172,37 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Remove_NullEntity_Throws()
         {
-            Assert.That(() => _map.Remove(null, new GridPosition(1, 1)),
+            Assert.That(() => _map.Remove(null),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
-        [Test] // point 3
-        public void Remove_EmptyCell_Throws()
+        [Test]
+        public void Remove_EntityNotPlaced_Throws()
         {
-            Assert.That(() => _map.Remove(_player, new GridPosition(1, 1)),
+            Assert.That(() => _map.Remove(_player),
                 Throws.TypeOf<InvalidOperationException>());
         }
 
-        [Test] // point 3
-        public void Remove_WrongEntity_ThrowsAndKeepsOccupant()
+        [Test]
+        public void Remove_Twice_Throws()
         {
-            var other = TestFactory.CreatePlayer();
             _map.Place(_player, new GridPosition(1, 1));
+            _map.Remove(_player);
 
-            Assert.That(() => _map.Remove(other, new GridPosition(1, 1)),
+            Assert.That(() => _map.Remove(_player),
                 Throws.TypeOf<InvalidOperationException>());
-            Assert.That(_map.GetEntity(new GridPosition(1, 1)), Is.SameAs(_player));
         }
 
-        [Test] // point 3 : l'entite est placee, mais ailleurs
-        public void Remove_EntityPlacedElsewhere_ThrowsAndKeepsBoth()
+        [Test] // l'entite non placee a la position par defaut (0,0), qui est occupee par une autre
+        public void Remove_UnplacedEntityOnOccupiedDefaultCell_ThrowsAndKeepsOccupant()
         {
-            _map.Place(_player, new GridPosition(1, 1));
+            var occupant = TestFactory.CreatePlayer();
+            _map.Place(occupant, new GridPosition(0, 0));
+            var unplaced = TestFactory.CreatePlayer(); // Position par defaut (0,0)
 
-            Assert.That(() => _map.Remove(_player, new GridPosition(2, 2)),
+            Assert.That(() => _map.Remove(unplaced),
                 Throws.TypeOf<InvalidOperationException>());
-            Assert.That(_map.GetEntity(new GridPosition(1, 1)), Is.SameAs(_player));
+            Assert.That(_map.GetEntity(new GridPosition(0, 0)), Is.SameAs(occupant));
         }
     }
 }

@@ -10,8 +10,9 @@ namespace FutharksAdventure.Core
         private readonly Player _player;
         private readonly IntentResolver _resolver;
         private readonly EventBus _eventBus;
+        private readonly DamageHandler _damageHandler;
 
-        public TurnManager(Player player, IntentResolver resolver, EventBus eventBus)
+        public TurnManager(Player player, IntentResolver resolver, EventBus eventBus, DamageHandler damageHandler)
         {
             if (player is null)
                 throw new ArgumentNullException(nameof(player));
@@ -19,10 +20,13 @@ namespace FutharksAdventure.Core
                 throw new ArgumentNullException(nameof(resolver));
             if (eventBus is null)
                 throw new ArgumentNullException(nameof(eventBus));
+            if (damageHandler is null)
+                throw new ArgumentNullException(nameof(damageHandler));
 
             _player = player;
             _resolver = resolver;
             _eventBus = eventBus;
+            _damageHandler = damageHandler;
         }
 
         public bool SubmitMove(Direction direction)
@@ -30,9 +34,24 @@ namespace FutharksAdventure.Core
             if (_player.IsDead)
                 return false;
 
-            GameAction action = _resolver.Resolve(_player, direction);
+            GameAction action = _resolver.ResolveMove(_player, direction);
 
-            if (action is null || !action.TryExecute())
+            if (!action.TryExecute())
+                return false;
+
+            ExecuteTurn();
+
+            return true;
+        }
+
+        public bool SubmitThrow()
+        {
+            if (_player.IsDead)
+                return false;
+
+            GameAction action = _resolver.ResolveThrow(_player);
+
+            if (!action.TryExecute())
                 return false;
 
             ExecuteTurn();
@@ -51,16 +70,7 @@ namespace FutharksAdventure.Core
             if (_player.TryConsumeFood())
                 _eventBus.Publish(new FoodChanged(_player.Food));
             else
-                ConsumeHealth(_player, 1);
-        }
-
-        private void ConsumeHealth(Creature creature, int amount)
-        {
-            creature.TakeDamage(amount);
-            _eventBus.Publish(new HealthChanged(creature, -amount));
-
-            if (creature.IsDead && creature==_player)
-                _eventBus.Publish(new PlayerDied());
+                _damageHandler.ApplyDamage(_player, 1);
         }
     }
 }

@@ -7,23 +7,25 @@ namespace FutharksAdventure.Tests
 {
     public class TurnManagerTests
     {
+        private TestWorld _world;
         private EventBus _bus;
-        private OccupancyMap _occupancy;
         private Player _player;
         private TurnManager _turnManager;
         private IntentResolver _resolver;
+        private DamageHandler _damageHandler;
+
+        private static readonly GridPosition Start = new GridPosition(2, 3); // contre le mur Nord
+        private static readonly GridPosition SouthOfPlayer = new GridPosition(2, 2);
 
         [SetUp]
         public void SetUp()
         {
-            var grid = TestFloors.CreateRoom3x3();
-            _bus = new EventBus();
-            _occupancy = new OccupancyMap();
-            _player = TestFactory.CreatePlayer(10,10);
-            _occupancy.Place(_player, new GridPosition(2, 3)); // contre le mur Nord
-
-            _resolver = new IntentResolver(grid, _occupancy, _bus);
-            _turnManager = new TurnManager(_player, _resolver, _bus);
+            _world = TestWorld.Create(TestFloors.CreateRoom3x3(), Start);
+            _bus = _world.Bus;
+            _player = _world.Player;
+            _resolver = _world.Resolver;
+            _damageHandler = _world.DamageHandler;
+            _turnManager = _world.TurnManager;
         }
 
         [Test]
@@ -56,7 +58,7 @@ namespace FutharksAdventure.Tests
 
             Assert.That(accepted, Is.False);
             Assert.That(resolved, Is.False);
-            Assert.That(_player.Position, Is.EqualTo(new GridPosition(2, 3)));
+            Assert.That(_player.Position, Is.EqualTo(Start));
         }
 
         [Test]
@@ -74,38 +76,43 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Constructor_NullPlayer_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new TurnManager(null, _resolver, _bus));
+            Assert.Throws<ArgumentNullException>(() => new TurnManager(null, _resolver, _bus, _damageHandler));
         }
 
         [Test]
         public void Constructor_NullResolver_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new TurnManager(_player, null, _bus));
+            Assert.Throws<ArgumentNullException>(() => new TurnManager(_player, null, _bus, _damageHandler));
         }
 
         [Test]
         public void Constructor_NullEventBus_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new TurnManager(_player, _resolver, null));
+            Assert.Throws<ArgumentNullException>(() => new TurnManager(_player, _resolver, null, _damageHandler));
         }
 
-        private static readonly GridPosition SouthOfPlayer = new GridPosition(2, 2);
+        [Test]
+        public void Constructor_NullDamageHandler_Throws()
+        {
+            Assert.That(() => new TurnManager(_player, _resolver, _bus, null),
+                Throws.TypeOf<ArgumentNullException>());
+        }
 
         [Test]
         public void SubmitMove_TowardEnemy_ReturnsTrueAndPlayerStays()
         {
-            _occupancy.Place(TestFactory.CreateEnemy(), SouthOfPlayer);
+            _world.PlaceEnemy(SouthOfPlayer);
 
             bool accepted = _turnManager.SubmitMove(Direction.South);
 
             Assert.That(accepted, Is.True);
-            Assert.That(_player.Position, Is.EqualTo(new GridPosition(2, 3)));
+            Assert.That(_player.Position, Is.EqualTo(Start));
         }
 
         [Test]
         public void SubmitMove_TowardEnemy_ConsumesATurn()
         {
-            _occupancy.Place(TestFactory.CreateEnemy(), SouthOfPlayer);
+            _world.PlaceEnemy(SouthOfPlayer);
             int foodBefore = _player.Food;
             bool resolved = false;
             _bus.Subscribe<TurnResolved>(_ => resolved = true);
@@ -119,8 +126,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void SubmitMove_TowardEnemy_PublishesEnemyHealthChangedBeforeTurnResolved()
         {
-            var enemy = TestFactory.CreateEnemy();
-            _occupancy.Place(enemy, SouthOfPlayer);
+            var enemy = _world.PlaceEnemy(SouthOfPlayer);
             var log = new List<string>();
             _bus.Subscribe<HealthChanged>(e => { if (e.Creature == enemy) log.Add("enemyHit"); });
             _bus.Subscribe<TurnResolved>(_ => log.Add("turn"));
@@ -133,7 +139,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void SubmitMove_AfterKillingEnemy_PlayerCanWalkOnItsCell()
         {
-            _occupancy.Place(TestFactory.CreateEnemy(maxHealth: _player.AttackDamage), SouthOfPlayer);
+            _world.PlaceEnemy(SouthOfPlayer, maxHealth: _player.AttackDamage);
 
             _turnManager.SubmitMove(Direction.South); // tue l'ennemi
             bool moved = _turnManager.SubmitMove(Direction.South);

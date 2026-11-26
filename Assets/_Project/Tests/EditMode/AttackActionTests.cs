@@ -7,8 +7,10 @@ namespace FutharksAdventure.Tests
 {
     public class AttackActionTests
     {
+        private TestWorld _world;
         private OccupancyMap _occupancy;
         private EventBus _bus;
+        private DamageHandler _damageHandler;
         private Player _player;
         private Creature _enemy;
 
@@ -20,23 +22,21 @@ namespace FutharksAdventure.Tests
         [SetUp]
         public void SetUp()
         {
-            _occupancy = new OccupancyMap();
-            _bus = new EventBus();
-            _player = TestFactory.CreatePlayer(maxHealth: 10, atkDmg: 4);
-            _enemy = TestFactory.CreateEnemy(maxHealth: 10, atkDmg: 3);
-            _occupancy.Place(_player, PlayerCell);
-            _occupancy.Place(_enemy, NorthOfPlayer);
+            _world = TestWorld.Create(TestFloors.CreateRoom3x3(), PlayerCell,
+                TestFactory.CreatePlayer(maxHealth: 10, atkDmg: 4));
+            _occupancy = _world.Occupancy;
+            _bus = _world.Bus;
+            _damageHandler = _world.DamageHandler;
+            _player = _world.Player;
+            _enemy = _world.PlaceEnemy(NorthOfPlayer, maxHealth: 10, atkDmg: 3);
         }
 
         private AttackAction CreateAttack(Creature attacker, Creature target) =>
-            new AttackAction(_bus, _occupancy, attacker, target, attacker.Position, target.Position);
+            new AttackAction(_damageHandler, attacker, target, attacker.Position, target.Position);
 
-        private Creature PlaceWeakEnemy(GridPosition cell)
-        {
-            var weak = TestFactory.CreateEnemy(maxHealth: 4); // meurt en un coup du joueur (4 degats)
-            _occupancy.Place(weak, cell);
-            return weak;
-        }
+        // meurt en un coup du joueur (4 degats)
+        private Creature PlaceWeakEnemy(GridPosition cell) =>
+            _world.PlaceEnemy(cell, maxHealth: 4);
 
         // --- CanExecute ---
 
@@ -151,8 +151,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TryExecute_KillsPlayer_PublishesPlayerDiedOnce()
         {
-            var killer = TestFactory.CreateEnemy(atkDmg: 10);
-            _occupancy.Place(killer, WestOfPlayer);
+            var killer = _world.PlaceEnemy(WestOfPlayer, atkDmg: 10);
             int deaths = 0;
             _bus.Subscribe<PlayerDied>(_ => deaths++);
 
@@ -165,8 +164,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TryExecute_KillsPlayer_PlayerStaysOnMap()
         {
-            var killer = TestFactory.CreateEnemy(atkDmg: 10);
-            _occupancy.Place(killer, WestOfPlayer);
+            var killer = _world.PlaceEnemy(WestOfPlayer, atkDmg: 10);
 
             CreateAttack(killer, _player).TryExecute();
 
@@ -176,8 +174,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void TryExecute_KillsPlayer_PublishesHealthChangedBeforePlayerDied()
         {
-            var killer = TestFactory.CreateEnemy(atkDmg: 10);
-            _occupancy.Place(killer, WestOfPlayer);
+            var killer = _world.PlaceEnemy(WestOfPlayer, atkDmg: 10);
             var log = new List<string>();
             _bus.Subscribe<HealthChanged>(_ => log.Add("health"));
             _bus.Subscribe<PlayerDied>(_ => log.Add("died"));
@@ -207,7 +204,7 @@ namespace FutharksAdventure.Tests
             Assert.That(() => attack.TryExecute(), Throws.TypeOf<InvalidOperationException>());
         }
 
-        [Test] // cible deja morte = action perimee
+        [Test] // cible deja morte = refus
         public void TryExecute_TargetAlreadyDead_ReturnsFalseAndPublishesNothing()
         {
             var weak = PlaceWeakEnemy(EastOfPlayer);
@@ -227,10 +224,8 @@ namespace FutharksAdventure.Tests
         [Test] // deux attaques sur le joueur dans le meme tour
         public void TryExecute_TwoAttacksOnPlayer_PlayerDiedPublishedOnce()
         {
-            var killer1 = TestFactory.CreateEnemy(atkDmg: 10);
-            var killer2 = TestFactory.CreateEnemy(atkDmg: 10);
-            _occupancy.Place(killer1, WestOfPlayer);
-            _occupancy.Place(killer2, EastOfPlayer);
+            var killer1 = _world.PlaceEnemy(WestOfPlayer, atkDmg: 10);
+            var killer2 = _world.PlaceEnemy(EastOfPlayer, atkDmg: 10);
             var attack1 = CreateAttack(killer1, _player);
             var attack2 = CreateAttack(killer2, _player);
             int deaths = 0;
@@ -243,12 +238,12 @@ namespace FutharksAdventure.Tests
             Assert.That(deaths, Is.EqualTo(1));
         }
 
-        // --- OverKill ---
+        // --- Overkill ---
+
         [Test]
         public void TryExecute_Overkill_HealthChangedCarriesFullDamage()
         {
-            var fragile = TestFactory.CreateEnemy(maxHealth: 2);
-            _occupancy.Place(fragile, EastOfPlayer);
+            var fragile = _world.PlaceEnemy(EastOfPlayer, maxHealth: 2);
             HealthChanged? received = null;
             _bus.Subscribe<HealthChanged>(e => received = e);
 
@@ -258,34 +253,26 @@ namespace FutharksAdventure.Tests
             Assert.That(fragile.CurrentHealth, Is.EqualTo(0));
         }
 
-
         // --- Constructeur ---
 
         [Test]
-        public void Constructor_NullEventBus_Throws()
+        public void Constructor_NullDamageHandler_Throws()
         {
-            Assert.That(() => new AttackAction(null, _occupancy, _player, _enemy, PlayerCell, NorthOfPlayer),
-                Throws.TypeOf<ArgumentNullException>());
-        }
-
-        [Test]
-        public void Constructor_NullOccupancyMap_Throws()
-        {
-            Assert.That(() => new AttackAction(_bus, null, _player, _enemy, PlayerCell, NorthOfPlayer),
+            Assert.That(() => new AttackAction(null, _player, _enemy, PlayerCell, NorthOfPlayer),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
         public void Constructor_NullAttacker_Throws()
         {
-            Assert.That(() => new AttackAction(_bus, _occupancy, null, _enemy, PlayerCell, NorthOfPlayer),
+            Assert.That(() => new AttackAction(_damageHandler, null, _enemy, PlayerCell, NorthOfPlayer),
                 Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
         public void Constructor_NullTarget_Throws()
         {
-            Assert.That(() => new AttackAction(_bus, _occupancy, _player, null, PlayerCell, NorthOfPlayer),
+            Assert.That(() => new AttackAction(_damageHandler, _player, null, PlayerCell, NorthOfPlayer),
                 Throws.TypeOf<ArgumentNullException>());
         }
     }

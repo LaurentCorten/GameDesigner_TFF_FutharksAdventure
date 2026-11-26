@@ -17,11 +17,11 @@ namespace FutharksAdventure.Tests
         [SetUp]
         public void SetUp()
         {
-            _grid = TestFloors.CreateRoom3x3();
-            _occupancy = new OccupancyMap();
-            _bus = new EventBus();
-            _player = TestFactory.CreatePlayer(10, 10);
-            _occupancy.Place(_player, Center);
+            var world = TestWorld.Create(TestFloors.CreateRoom3x3(), Center);
+            _grid = world.Grid;
+            _occupancy = world.Occupancy;
+            _bus = world.Bus;
+            _player = world.Player;
         }
 
         private MoveAction CreateMove(Direction direction) =>
@@ -139,11 +139,10 @@ namespace FutharksAdventure.Tests
         {
             var grid = new FloorGrid(1, 1);
             grid.SetTileType(new GridPosition(0, 0), TileType.Floor);
-            var occupancy = new OccupancyMap();
-            var player = TestFactory.CreatePlayer(10, 10);
-            occupancy.Place(player, new GridPosition(0, 0));
+            var world = TestWorld.Create(grid, new GridPosition(0, 0));
+            var player = world.Player;
 
-            var move = new MoveAction(player, player.Position, player.Position+Direction.West.ToGridOffset(), grid, occupancy, _bus);
+            var move = new MoveAction(player, player.Position, player.Position + Direction.West.ToGridOffset(), world.Grid, world.Occupancy, world.Bus);
 
             Assert.That(move.CanExecute(), Is.False);
         }
@@ -151,7 +150,7 @@ namespace FutharksAdventure.Tests
         [Test]
         public void Constructor_NullEntity_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new MoveAction(null, new GridPosition(0,0), new GridPosition(0,1), _grid, _occupancy, _bus));
+            Assert.Throws<ArgumentNullException>(() => new MoveAction(null, new GridPosition(0, 0), new GridPosition(0, 1), _grid, _occupancy, _bus));
         }
 
         [Test]

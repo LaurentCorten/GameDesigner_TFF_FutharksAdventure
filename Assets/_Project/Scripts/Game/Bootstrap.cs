@@ -19,6 +19,10 @@ namespace FutharksAdventure.Game
 
         [Header("TEMPORARY DEBUG")]
         [SerializeField] private GameCheck _gameCheck;
+        [SerializeField] private EntityView _enemyPrefab;
+        [SerializeField] private MockEnemyConfig _mockEnemyConfig;
+        private Enemy _mockEnemy;
+
 
         private EventBus _eventBus;
         private FutharksInputMap _inputMap;
@@ -28,6 +32,9 @@ namespace FutharksAdventure.Game
         private IntentResolver _intentResolver;
         private TurnManager _turnManager;
         private InputController _inputController;
+        private DamageHandler _damageHandler;
+        private TargetSelector _targetSelector;
+
 
         private void Awake()
         {
@@ -36,9 +43,11 @@ namespace FutharksAdventure.Game
 
             _eventBus = new EventBus();
             _occupancyMap = new OccupancyMap();
+            _damageHandler = new DamageHandler(_eventBus, _occupancyMap);
             _floorGrid = BuildTestFloor();
-            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus);
-            _turnManager = new TurnManager(_player, _intentResolver, _eventBus);
+            _targetSelector = new TargetSelector(_floorGrid, _occupancyMap);
+            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus, _damageHandler, _targetSelector);
+            _turnManager = new TurnManager(_player, _intentResolver, _eventBus, _damageHandler);
             _inputController = new InputController(_inputMap, _turnManager);
             _playerStatsDisplay.Init(_eventBus, _player);
 
@@ -57,7 +66,13 @@ namespace FutharksAdventure.Game
             _occupancyMap.Place(_player, entryGridPosition);
             EntityView playerEntityView = Instantiate(_playerPrefab);
             playerEntityView.Init(_player, _eventBus, _gridView);
-            _cinemachineCamera.Target.TrackingTarget = playerEntityView.transform; 
+            _cinemachineCamera.Target.TrackingTarget = playerEntityView.transform;
+            #endregion
+            #region TEMPORARY: Initialisation du MockEnemy
+            _mockEnemy = InstantiateMockEnemy();
+            _occupancyMap.Place(_mockEnemy, new GridPosition(_player.Position.X + 8, _player.Position.Y));
+            EntityView mockEnemyEntityView = Instantiate(_enemyPrefab);
+            mockEnemyEntityView.Init(_mockEnemy, _eventBus, _gridView);
             #endregion
 
             _inputController.Enable();
@@ -72,7 +87,7 @@ namespace FutharksAdventure.Game
         // TEMPORARY: hard-coded test floor, replaced by the procedural generator in Phase 5
         private static FloorGrid BuildTestFloor()
         {
-            // Instanciate a grid big enough
+            // Instantiate a grid big enough
             var floor = new FloorGrid(21, 11);
 
             // Carve the 2 rooms in it
@@ -115,6 +130,14 @@ namespace FutharksAdventure.Game
                     }
                 }
             throw new InvalidOperationException("Pas de TileType.Entry dans le grid !");
+        }
+
+        private Enemy InstantiateMockEnemy()
+        {
+            if (_mockEnemyConfig == null)
+                throw new ArgumentNullException(nameof(_mockEnemyConfig));
+
+            return new Enemy(_mockEnemyConfig.MaxHealth, _mockEnemyConfig.VisionRange, _mockEnemyConfig.AttackDamage);
         }
     }
 }

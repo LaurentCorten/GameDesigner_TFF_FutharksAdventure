@@ -147,5 +147,25 @@ namespace FutharksAdventure.Tests
             Assert.That(consumed, Is.False);
             Assert.That(player.Food, Is.EqualTo(0));
         }
+
+        // --- ConsumeHatchet ---
+        [Test]
+        public void ConsumeHatchet_WithHatchets_RemovesOne()
+        {
+            var player = TestFactory.CreatePlayer(hatchets: 3);
+
+            player.ConsumeHatchet();
+
+            Assert.That(player.Hatchets, Is.EqualTo(2));
+        }
+
+        [Test] // retirer une hachette inexistante = bug
+        public void ConsumeHatchet_WithoutHatchets_ThrowsAndStaysAtZero()
+        {
+            var player = TestFactory.CreatePlayer(hatchets: 0);
+
+            Assert.That(() => player.ConsumeHatchet(), Throws.TypeOf<InvalidOperationException>());
+            Assert.That(player.Hatchets, Is.EqualTo(0));
+        }
     }
 }

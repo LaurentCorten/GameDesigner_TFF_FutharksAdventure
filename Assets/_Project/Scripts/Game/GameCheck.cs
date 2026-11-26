@@ -32,7 +32,7 @@ namespace FutharksAdventure.Game
         //--- CallBacks --
         private void OnEntityMoved(EntityMoved evt)
         {
-            Debug.Log($"{evt.Entity.GetType()} goes from {evt.From} to {evt.To}");
+            Debug.Log($"{evt.Entity.GetType()} goes from {evt.From.ToString()} to {evt.To.ToString()}");
         }
 
         private void OnFoodChanged(FoodChanged evt)
