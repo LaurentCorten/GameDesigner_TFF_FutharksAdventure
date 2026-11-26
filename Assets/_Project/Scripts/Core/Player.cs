@@ -26,5 +26,12 @@ namespace FutharksAdventure.Core
             Food--;
             return true;
         }
+
+        public void ConsumeHatchet()
+        {
+            if (Hatchets <= 0) throw new InvalidOperationException("Il n'y a pas de hachette à consommer");
+
+            Hatchets--;
+        }
     }
 }

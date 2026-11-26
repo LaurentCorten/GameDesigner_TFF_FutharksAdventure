@@ -11,21 +11,25 @@ namespace FutharksAdventure.Core
         private readonly OccupancyMap _occupancyMap;
         private readonly EventBus _eventBus;
         private readonly DamageHandler _damageHandler;
+        private readonly TargetSelector _targetSelector;
 
-        public IntentResolver(FloorGrid grid, OccupancyMap occupancyMap, EventBus eventBus, DamageHandler damageHandler)
+
+        public IntentResolver(FloorGrid grid, OccupancyMap occupancyMap, EventBus eventBus, DamageHandler damageHandler, TargetSelector targetSelector)
         {
-            if(grid is null) throw new ArgumentNullException(nameof(grid));
-            if(occupancyMap is null) throw new ArgumentNullException(nameof(occupancyMap));
-            if(eventBus is null) throw new ArgumentNullException(nameof(eventBus));
-            if(damageHandler is null) throw new ArgumentNullException(nameof(damageHandler));
+            if (grid is null) throw new ArgumentNullException(nameof(grid));
+            if (occupancyMap is null) throw new ArgumentNullException(nameof(occupancyMap));
+            if (eventBus is null) throw new ArgumentNullException(nameof(eventBus));
+            if (damageHandler is null) throw new ArgumentNullException(nameof(damageHandler));
+            if (targetSelector is null) throw new ArgumentNullException(nameof(targetSelector));
             
             _grid = grid;
             _occupancyMap = occupancyMap;
             _eventBus = eventBus;
             _damageHandler = damageHandler;
+            _targetSelector = targetSelector;
         }
 
-        public GameAction Resolve(Creature creature, Direction direction)
+        public GameAction ResolveMove(Creature creature, Direction direction)
         {
             if (creature is null) throw new ArgumentNullException();
 
@@ -38,7 +42,17 @@ namespace FutharksAdventure.Core
             if (occupant is Creature target)
                 return new AttackAction(_damageHandler, creature, target, creature.Position, targetPosition);
 
-            return null;
+            return new RefusedAction();
+        }
+
+        public GameAction ResolveThrow(Creature thrower)
+        {
+            if (thrower is null) throw new ArgumentNullException(nameof(thrower));
+
+            if (thrower is Player player)
+                return new ThrowAction(_eventBus, _targetSelector, _damageHandler, player);
+
+            return new RefusedAction();
         }
     }
 }

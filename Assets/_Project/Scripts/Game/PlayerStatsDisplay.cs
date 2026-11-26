@@ -35,8 +35,6 @@ namespace FutharksAdventure.Game
 
             _player = player;
             _eventBus = eventBus;
-            //_eventBus.Subscribe<FoodChanged>(OnFoodChanged);
-            //_eventBus.Subscribe<HealthChanged>(OnHealthChanged);
             _eventBus.Subscribe<TurnResolved>(OnTurnResolved);
 
             UpdatePlayerStatsDisplay();
@@ -44,23 +42,10 @@ namespace FutharksAdventure.Game
 
         private void OnDestroy()
         {
-            //_eventBus?.Unsubscribe<FoodChanged>(OnFoodChanged);
-            //_eventBus?.Unsubscribe<HealthChanged>(OnHealthChanged);
             _eventBus?.Unsubscribe<TurnResolved>(OnTurnResolved);
         }
 
         //--- CallBacks --
-
-        //private void OnFoodChanged(FoodChanged evt)
-        //{
-
-        //}
-
-        //private void OnHealthChanged(HealthChanged evt)
-        //{
-
-        //}
-
         private void OnTurnResolved(TurnResolved resolved)
         {
             UpdatePlayerStatsDisplay();

@@ -27,6 +27,14 @@ namespace FutharksAdventure.Core
         {  Current = current; }
     }
 
+    public readonly struct HatchetsChanged
+    {
+        public int Current { get; }
+
+        public HatchetsChanged(int current)
+        { Current = current; }
+    }
+
     public readonly struct HealthChanged
     {
         public Creature Creature { get; }

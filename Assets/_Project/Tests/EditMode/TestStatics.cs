@@ -80,7 +80,7 @@ namespace FutharksAdventure.Tests
             Bus = new EventBus();
             DamageHandler = new DamageHandler(Bus, Occupancy);
             TargetSelector = new TargetSelector(Grid, Occupancy);
-            Resolver = new IntentResolver(Grid, Occupancy, Bus, DamageHandler);
+            Resolver = new IntentResolver(Grid, Occupancy, Bus, DamageHandler, TargetSelector);
             TurnManager = new TurnManager(Player, Resolver, Bus, DamageHandler);
         }
 

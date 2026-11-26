@@ -34,9 +34,24 @@ namespace FutharksAdventure.Core
             if (_player.IsDead)
                 return false;
 
-            GameAction action = _resolver.Resolve(_player, direction);
+            GameAction action = _resolver.ResolveMove(_player, direction);
 
-            if (action is null || !action.TryExecute())
+            if (!action.TryExecute())
+                return false;
+
+            ExecuteTurn();
+
+            return true;
+        }
+
+        public bool SubmitThrow()
+        {
+            if (_player.IsDead)
+                return false;
+
+            GameAction action = _resolver.ResolveThrow(_player);
+
+            if (!action.TryExecute())
                 return false;
 
             ExecuteTurn();

@@ -20,6 +20,7 @@ namespace FutharksAdventure.Game
         [Header("TEMPORARY DEBUG")]
         [SerializeField] private GameCheck _gameCheck;
 
+
         private EventBus _eventBus;
         private FutharksInputMap _inputMap;
         private FloorGrid _floorGrid;
@@ -29,6 +30,8 @@ namespace FutharksAdventure.Game
         private TurnManager _turnManager;
         private InputController _inputController;
         private DamageHandler _damageHandler;
+        private TargetSelector _targetSelector;
+
 
         private void Awake()
         {
@@ -39,7 +42,8 @@ namespace FutharksAdventure.Game
             _occupancyMap = new OccupancyMap();
             _damageHandler = new DamageHandler(_eventBus, _occupancyMap);
             _floorGrid = BuildTestFloor();
-            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus, _damageHandler);
+            _targetSelector = new TargetSelector(_floorGrid, _occupancyMap);
+            _intentResolver = new IntentResolver(_floorGrid, _occupancyMap, _eventBus, _damageHandler, _targetSelector);
             _turnManager = new TurnManager(_player, _intentResolver, _eventBus, _damageHandler);
             _inputController = new InputController(_inputMap, _turnManager);
             _playerStatsDisplay.Init(_eventBus, _player);
