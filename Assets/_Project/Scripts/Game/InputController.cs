@@ -60,7 +60,6 @@ namespace FutharksAdventure.Game
                 return;
 
             _turnManager.SubmitThrow();
-            Debug.Log("Pew Pew");
         }
     }
 }

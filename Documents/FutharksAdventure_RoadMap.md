@@ -116,15 +116,15 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (D) Ou vit la logique "degats + HealthChanged + PlayerDied" (aujourd'hui privee dans TurnManager) pour qu'AttackAction la reutilise
 - [x] Attaque melee : MoveAction vers une case ennemie => AttackAction
 - [x] Degats fixes, toujours touche (le test de touche est un ajout de palier)
-- [ ] ThrowAction + selection automatique de cible (regles GDD 4.5) :
+- [x] ThrowAction + selection automatique de cible (regles GDD 4.5) :
       alignement 4 axes, portee = VisionRange (carre), ligne de visee non blogit pushquee par un mur,
       pas de case adjacente, plus proche, egalite -> cible precedente, sinon moins de PV
       (D) egalite de PV aussi : premier de la liste en attendant
-- [ ] Aucune cible ou stock vide : action refusee, aucun tour, aucune hachette perdue
-- [ ] (D) Entree du TurnManager : une methode Submit par action ou Submit(intent)
-- [ ] HUD : le compteur de hachettes (deja affiche) diminue au lancer
-- [ ] (V) Le stock de hachettes diminue a l'ecran, refus visible sans tour consomme
-- [ ] (T) Un test par regle du tableau 4.5
+- [x] Aucune cible ou stock vide : action refusee, aucun tour, aucune hachette perdue
+- [x] (D) Entree du TurnManager : une methode Submit par action ~~ou Submit(intent)~~
+- [x] HUD : le compteur de hachettes (deja affiche) diminue au lancer
+- [x] (V) Le stock de hachettes diminue a l'ecran, refus ~~visible~~ sans tour consomme
+- [x] (T) Un test par regle du tableau 4.5
 
 ### 3.3 Potion et inventaire
 - [ ] Inventaire en file : 3 emplacements, rempli de droite a gauche, sans trou
