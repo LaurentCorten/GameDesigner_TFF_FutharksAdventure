@@ -6,7 +6,7 @@ Octobre 2026
 
 **Engine :** Unity 6 (C#)
 
-**Support :** PC (vertical slice) - expansion possible sur console et/ou telephone
+**Support :** PC (prototype) - expansion possible sur console et/ou telephone
 
 **Genre :** Roguelike - Tour par tour - Grid based
 
@@ -25,7 +25,7 @@ Octobre 2026
 7. Niveaux et generation
 8. Interface
 9. Direction artistique et audio
-10. Vertical slice
+10. Prototype
 
 ---
 
@@ -51,7 +51,7 @@ Le detail des boucles de jeu est au chapitre 3.
 |---|---|
 | Perspective / camera | 2D, vue du dessus, grid based |
 | Direction artistique | Pixel art, ambiance nordique, une tonalite adaptee a chaque biome |
-| Controles | Clavier/souris (vertical slice) ; manette et tactile ensuite selon le support |
+| Controles | Clavier/souris (proto) ; manette et tactile ensuite selon le support |
 | Rythme | Tour par tour : 1 action du joueur = 1 tour de jeu = 1 action de chaque ennemi |
 | Duree d'une run | [A DEFINIR] |
 | Format d'ecran | 16:9 (paysage), variante portrait envisagee pour le telephone |
@@ -240,8 +240,8 @@ Le personnage n'a **pas de progression permanente** : tout est remis a zero a ch
 | Nourriture | Ressource consommee a chaque tour. A 0, chaque tour coute 1 PV | 150* |
 | Monnaie | Sert a acheter des items aupres des marchands | 0* |
 | Hachettes | Munitions de l'attaque a distance | 3* |
-| Portee de vision (VisionRange) | Rayon, en cases, de la zone de vision carree autour du joueur (chapitre 8) et portee de l'attaque a distance (4.5) | [A DEFINIR] |
-| Degats | Degats infliges par les attaques, modifies par l'arme et le bijou de Force | [A DEFINIR] |
+| Portee de vision (VisionRange) | Rayon, en cases, de la zone de vision carree autour du joueur (chapitre 8) et portee de l'attaque a distance (4.5) | 6* |
+| Degats | Degats infliges par les attaques, modifies par l'arme et le bijou de Force | 4* |
 | Reduction de degats | Diminue les degats recus, modifiee par l'armure | 0* |
 | Dexterite (Dex) | Aptitude au touche et aux esquives | [A DEFINIR] |
 
@@ -293,11 +293,11 @@ L'attaque a distance (hachette) utilise une **visee automatique** : le joueur ne
 | Regle | Detail |
 |---|---|
 | Condition de tir | Au moins un monstre **aligne** sur l'une des 4 directions cardinales |
-| Portee | Les cases de la zone de vision (rayon **VisionRange**) avec une ligne de visee **non interrompue** par un mur |
+| Portee | Les cases de la zone de vision (rayon **VisionRange**) avec une ligne de visee **non interrompue** par un mur ou une creature (on ne lance pas a travers un monstre) |
 | Case adjacente | Impossible de lancer une hachette sur un monstre en case adjacente (c'est du corps a corps) |
 | Cible multiple | Le monstre **le plus proche** est vise |
 | Egalite de distance | Meme cible qu'au coup precedent si elle fait partie des candidats |
-| Egalite sans coup precedent | Le monstre ayant **le moins de PV** parmi les plus proches [A DEFINIR : si egalite de PV aussi] |
+| Egalite sans coup precedent | Le monstre ayant **le moins de PV** parmi les plus proches; en cas d'egalite de PV aussi, le choix est arbitraire (ordre Nord, Est, Sud, Ouest) |
 | Aucune cible valide | L'action est refusee : aucun tour consomme, aucune hachette perdue |
 | Stock vide | L'action est refusee : aucun tour consomme |
 
@@ -557,7 +557,7 @@ L'inventaire est affiche dans le HUD (8.4) ; ses regles sont au chapitre 5. Les 
 
 ### 8.4 HUD de la vue etage
 
-Le HUD affiche en permanence les informations vitales de la run. Il est concu en **16:9 (paysage)** pour le PC, avec une variante **portrait** envisagee pour le telephone. [TODO : Corriger pour correspondre aux decisions prises de vue carree et de brouillard]
+Le HUD affiche en permanence les informations vitales de la run. Il est concu en **16:9 (paysage)** pour le PC, avec une variante **portrait** envisagee pour le telephone.
 
 | Element | Description | Position (paysage) |
 |---|---|---|
@@ -647,16 +647,18 @@ Role du son dans le gameplay : les retours sonores doivent confirmer chaque acti
 ### 9.7 Elements a trancher
 
 - Assets graphiques : **externes** (achat possible si le prix reste raisonnable) ; choix du pack et verification des licences (assets et police) : [A DEFINIR].
-- Nombre d'assets a produire pour la vertical slice : voir chapitre 10.
+- Nombre d'assets a produire pour la proto : voir chapitre 10.
 - Options d'accessibilite visuelle (contraste, taille du texte, daltonisme) : [A DEFINIR].
 
-## 10. Vertical slice
+## 10. Prototype
 
 ### 10.1 Objectif
 
-La vertical slice est une version jouable de bout en bout qui prouve que la boucle de jeu fonctionne : demarrer une run, explorer plusieurs etages generes procedurellement, combattre des monstres, gerer ses ressources, affronter un boss, puis voir son score au leaderboard. Elle correspond grosso modo au **premier biome** du jeu complet ; la victoire de la slice consiste a vaincre le boss de ce biome.
+Le prototype est une version jouable de bout en bout qui prouve que la boucle de jeu fonctionne : demarrer une run, explorer plusieurs etages generes procedurellement, combattre des monstres, gerer ses ressources, affronter un boss, puis voir son score. Il correspond grosso modo au **premier biome** du jeu dans sa verion la plus epuree; la victoire du proto consiste a vaincre le boss de ce biome.
 
-Support cible : **PC, clavier/souris**. Les controles manette et tactile sont decrits au chapitre 4 mais ne font pas partie de la vertical slice.
+Une vraie vertical slice inclura en plus tous les paliers complementaires (10.3) mais dans le cadre de mon Travail de Fin de Formation l'objectif est de produire un proto viable correspondant au palier 0 (voir 0.5).
+
+Support cible : **PC, clavier/souris**. Les controles manette et tactile sont decrits au chapitre 4 mais ne font pas partie du prototype.
 
 Royaume du premier biome : [A DEFINIR].
 
@@ -671,16 +673,14 @@ Le MVP est la version minimale qui doit imperativement etre livree.
 | Combat | Degats fixes, toute attaque touche (pas de test de touche) |
 | Tour par tour | Systeme de tours complet : le joueur agit, puis les monstres et le boss agissent (chapitre 3) |
 | Ressources | Nourriture consommee a chaque tour, PV, hachettes, famine (a 0 de nourriture, 1 PV par tour) |
-| Visibilite | Brouillard : zone de vision carree (VisionRange), cases jamais vues / deja vues / visibles (chapitre 8) |
-| Monstres | Plusieurs types de monstres aux caracteristiques distinctes (chapitre 6) |
-| Boss | Un boss en fin de biome |
+| Monstres | Plusieurs types de monstres aux caracteristiques distinctes (chapitre 6), attaque au corps a corps uniquement |
+| Boss | Un boss en fin de biome : un monstre plus puissant, sans mecanique speciale |
 | Loot | Nourriture, munitions d'attaque a distance (hachettes), potion de vie |
-| HUD | Barre de vie, nourriture, hachettes, inventaire, score (chapitre 8) |
+| HUD | Barre de vie, nourriture, hachettes, inventaire [selon la decision sur l'inventaire], score (chapitre 8) |
 | Ecran de demarrage | Ecran de lancement d'une run |
 | Fin de run | Ecran de victoire / defaite avec score (chapitre 3) |
-| Leaderboard | Enregistrement et affichage des scores |
 
-**Hors MVP** (meme si ces elements apparaissent dans les autres chapitres) : monnaie (zone reservee au HUD) et marchands, equipement, bijoux, ceinture, runes et sorts, item de transformation, grandes potions de vie, familiers, artefacts, autres biomes, Odin, mecaniques de biome, test de touche (Dex), manette, tactile.
+**Hors MVP** (meme si ces elements apparaissent dans les autres chapitres) : brouillard, leaderboard, menu pause, attaque a distance des monstres, mecaniques speciales du boss, monnaie (zone reservee au HUD) et marchands, equipement, bijoux, ceinture, runes et sorts, item de transformation, grandes potions de vie, familiers, artefacts, autres biomes, Odin, mecaniques de biome, test de touche (Dex), manette, tactile.
 
 Le HUD et les systemes devront etre concus pour accueillir ces ajouts sans refonte.
 
@@ -691,6 +691,15 @@ Le HUD et les systemes devront etre concus pour accueillir ces ajouts sans refon
 Les paliers sont ordonnes par priorite. Chaque palier n'est aborde que si le precedent est termine et que le temps le permet.
 
 **Palier 0 - MVP** : voir 10.2.
+
+**Palier 0.5 - Polish** (dans cet ordre)
+
+- Assets graphiques, animations, son et retours visuels (degats, mort, ramassage, textes contextuels)
+- Brouillard (zone de vision carree, chapitre 8)
+- Leaderboard local (top 10)
+- Menu pause
+- Attaque a distance des monstres
+- Mecaniques speciales du boss
 
 **Palier 1 - Premiere couche de profondeur** (objectif souhaite)
 
@@ -723,7 +732,7 @@ Les paliers sont ordonnes par priorite. Chaque palier n'est aborde que si le pre
 - Test de touche (Dex)
 - Support manette
 
-### 10.4 Criteres de reussite de la vertical slice
+### 10.4 Criteres de reussite du prototype
 
 - Une run complete est jouable de l'ecran de demarrage jusqu'a l'ecran de fin, victoire ou defaite.
 - La boucle "explorer - combattre - gerer sa nourriture" est comprehensible sans explication.
@@ -732,3 +741,4 @@ Les paliers sont ordonnes par priorite. Chaque palier n'est aborde que si le pre
 - Les monstres sont distincts dans leur comportement et leurs statistiques.
 - Le boss constitue une difficulte marquante par rapport aux etages precedents.
 - Le jeu est stable sur PC [A DEFINIR : configuration minimale].
+

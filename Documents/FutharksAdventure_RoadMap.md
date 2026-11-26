@@ -1,7 +1,7 @@
-# FUTHARK'S ADVENTURE - Roadmap Vertical Slice (v2)
+# FUTHARK'S ADVENTURE - Roadmap Proto (v3)
 
-Base : GDD octobre 2026 (chapitre 10).
-Echeance : slice fonctionnelle le 01/12/2026, produit fini le 15/12/2026.
+Base : GDD octobre 2026 (chapitre 10), revue le 26/11/2026.
+Echeance : ~~slice fonctionnelle le 01/12/2026, produit fini le 15/12/2026.~~ Un bon proto jouable (palier 0), echeance dure le 15/12/2026.
 Budget : ~10-15 h/semaine jusqu'au 22/11, ~30 h/semaine du 23/11 au 15/12.
 
 Legende :
@@ -17,23 +17,26 @@ Legende :
 - Point d'entree unique : scene Bootstrap + Composition Root (seul endroit qui fait les new).
 - Les [A DEFINIR] du GDD sont tranches au moment ou ils deviennent necessaires, ou au playtest.
 - Checkpoint : si J2 n'est pas atteint le 15/11, on revoit le perimetre.
-
+- Checkpoint : si la Phase 5 n'est pas terminee le 04/12, on re-revoit le perimetre (piste : Items en usage direct, sans inventaire).
 ---
 
-## Planning
+## Planning (revision)
 
-| Semaine | Dates | Heures | Phases visees | Jalon |
-|---|---|---|---|---|
-| S1 | 22/10 - 01/11 | ~12 h | Phase 2 | J1 |
-| S2 | 02/11 - 08/11 | ~12 h | Phase 3 | |
-| S3 | 09/11 - 15/11 | ~12 h | Phase 4 | J2 |
-| S4 | 16/11 - 22/11 | ~12 h | Phases 5-6 | J3 |
-| S5 | 23/11 - 01/12 | ~40 h | Phases 7-8-9 + debut 10 | J4 = SLICE |
-| S6 | 02/12 - 08/12 | ~30 h | Phase 10 + playtests | J5 |
-| S7 | 09/12 - 15/12 | ~30 h | Phase 11 + paliers si temps | J6 = FINI |
+| Palier | Contenu | Echeance |
+|---|---|---|
+| 0 - Proto | Ennemis, etages generes, progression, items, score, State Machine | 15/12 (dure) |
+| 0.5 - Polish | Assets, son, retours visuels, brouillard, leaderboard, pause... | Si temps restant avant le 15/12 |
+| 1 a 5 | Paliers du GDD 10.3 | Apres le proto |
 
-Tache de fond des S1 (peu d'heures) : chercher et choisir le pack d'assets externe
-(il fixe la taille de tuile et la DA, mieux vaut le savoir tot).
+| Phase | Bloc | Estimation | Dates visees |
+|---|---|---|---|
+| 4 | Ennemis | ~15 h | 26/11 - 30/11 |
+| 5 | Generation | ~12 h | 01/12 - 03/12 |
+| 6 | Progression et boss | ~8 h | 04/12 - 05/12 |
+| 7 | Items | ~12 h | 06/12 - 08/12 |
+| 8 | Score et State Machine | ~10 h | 09/12 - 11/12 |
+| 9 | Build et playtests | ~15 h | 12/12 - 15/12 |
+| | Marge | ~8 h | |
 
 ---
 
@@ -112,145 +115,137 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] HUD : squelette du HUD final ; PV, nourriture, hachettes rafraichis sur TurnResolved
 - [x] (V) PV et nourriture evoluent a l'ecran a chaque tour, famine visible
 
-### 3.2 Combat
+### 3.2 Combat [termine]
 - [x] (D) Ou vit la logique "degats + HealthChanged + PlayerDied" (aujourd'hui privee dans TurnManager) pour qu'AttackAction la reutilise
 - [x] Attaque melee : MoveAction vers une case ennemie => AttackAction
 - [x] Degats fixes, toujours touche (le test de touche est un ajout de palier)
 - [x] ThrowAction + selection automatique de cible (regles GDD 4.5) :
       alignement 4 axes, portee = VisionRange (carre), ligne de visee non blogit pushquee par un mur,
       pas de case adjacente, plus proche, egalite -> cible precedente, sinon moins de PV
-      (D) egalite de PV aussi : premier de la liste en attendant
+      (D) egalite de PV aussi : premier de la liste
 - [x] Aucune cible ou stock vide : action refusee, aucun tour, aucune hachette perdue
 - [x] (D) Entree du TurnManager : une methode Submit par action ~~ou Submit(intent)~~
 - [x] HUD : le compteur de hachettes (deja affiche) diminue au lancer
 - [x] (V) Le stock de hachettes diminue a l'ecran, refus ~~visible~~ sans tour consomme
 - [x] (T) Un test par regle du tableau 4.5
 
-### 3.3 Potion et inventaire
-- [ ] Inventaire en file : 3 emplacements, rempli de droite a gauche, sans trou
-- [ ] Ajout : case libre la plus a droite ; plein : ejection de l'item le plus a droite, decalage, ajout a gauche
-- [ ] Utilisation : consommation puis decalage vers la droite des items a gauche
-- [ ] Potion de vie : soin moyen plafonne aux PV max
-- [ ] (T) Ajout, ejection quand plein (l'item ejecte est renvoye), decalage apres utilisation, potion plafonnee
-- [ ] HUD : 3 emplacements d'inventaire ; utilisation par clic gauche sur l'emplacement (GDD 4.4)
-- [ ] (D) Remplir l'inventaire avant le ramassage (Phase 6) pour la verification visuelle
-- [ ] (V) Ajout, ejection, decalage et utilisation visibles a l'ecran
-
-### Fin de S2
-- [ ] Choisir et acheter / telecharger le pack d'assets (au plus tard le 08/11) : fixe la taille de tuile
+(L'ancienne 3.3 "Potion et inventaire" est fusionnee dans la Phase 7 - Items.)
 
 ---
 
-## Phase 4 - Ennemis (S3) -> J2
+## Phase 4 - Ennemis
 
-- [ ] (D) Algorithme de deplacement vers le joueur (a discuter : BFS ou plus simple)
-- [ ] Cerveau d'ennemi (strategie par comportement) : Chaser, Wanderer ; Ranged (+)
-- [ ] EnemyData (SO) : nom, PV, degats, VisionRange, randomStepChance, score, drop
+- [ ] (D) Algorithme de deplacement vers le joueur (BFS ou plus simple)
+- [ ] (D) Orchestration du tour des ennemis dans le TurnManager
+- [ ] CreatureDied : publie par le DamageHandler pour les non-joueurs ; EntityView disparait a la mort
+- [ ] Cerveau d'ennemi (strategie par comportement) : Chaser, Wanderer
+- [ ] EnemyData (SO) : nom, PV, degats, VisionRange, randomStepChance, score, drop (MockEnemyConfig evolue)
 - [ ] 2 types de monstres garantis aux stats distinctes ; 3e type (+)
 - [ ] 1 action par tour : deplacement OU attaque ; conflit de case : premier de la liste gagne
 - [ ] Mort : retire de la grille, evenement (score plus tard)
 - [ ] EntityView reutilisee pour les ennemis (apparition, deplacement, disparition)
+- [ ] Projectile visuel du lancer de hachette ; (D) blocage de l'input pendant l'animation ou projectile instantane
 - [ ] (T) Detection, poursuite, attaque, mort ; aucun ennemi ne traverse un mur ou un autre ennemi
 - [ ] (T) Deux ennemis frappent un joueur mourant dans le meme tour : un seul PlayerDied (condition = passage vivant -> mort)
 - [ ] (V) Combat jouable a l'ecran, famine fonctionnelle
 
 ---
 
-## Phase 5 - Generation procedurale et brouillard (S4)
+## Phase 5 - Generation procedurale
 
-### 5.1 Generation (Core)
 - [ ] (D) Taille de l'etage et des pieces (idee : 21x21, pieces 5x5 max, 1 case de mur autour)
 - [ ] 9 pieces en 3x3, couloirs entre voisines, fusion possible (probabilite parametrable)
 - [ ] Entree et sortie dans deux pieces differentes
 - [ ] Placement des monstres selon une config de densite
-- [ ] Seed de run ; seed d'etage derivee de (seed de run, numero d'etage)
-- [ ] Affichage ASCII de debug
+- [ ] Seed de run interne (aucune interface) ; seed d'etage derivee de (seed de run, numero d'etage)
+- [ ] Tout le hasard passe par une seule instance de System.Random injectee
+- [ ] Affichage ASCII de debug (+)
 - [ ] (T) 1000 seeds : 100 % des etages completables, sortie != entree
 - [ ] (T) Toutes les entites placees par le generateur sont sur une case praticable
 
-### 5.2 Brouillard
-- [ ] Etat par case (Core) : jamais vue / deja vue / visible
-- [ ] Mise a jour a chaque tour : zone carree de rayon VisionRange autour du joueur (murs ignores)
-- [ ] Affichage : noir si jamais vue, assombri si deja vue, normal si visible ; ennemis caches hors vue
-- [ ] (T) Etats corrects apres deplacements ; (V) rendu a l'ecran
-
 ---
 
-## Phase 6 - Items au sol et ramassage (S4) -> J3
-- [ ] Donnees d'item (SO) : nom, icone, actif/passif, occupe une place, consommable
-- [ ] (D) Affichage des items au sol : EntityView ou affichage dedie
-- [ ] Loot au sol : nourriture (petite/moyenne/grosse), hachettes (3/5), potion de vie
-- [ ] Ramassage automatique en marchant dessus ; item ejecte depose sur la case du joueur
-- [ ] Placement du loot a la generation (config de densite)
-- [ ] Drops de monstres (+)
-- [ ] (T) Ramassage, ressources mises a jour, item ejecte present au sol
-
----
-
-## Phase 7 - Progression et boss (S5)
+## Phase 6 - Progression et boss
 
 - [ ] RunManager : seed, etage courant, etat (en cours / victoire / defaite)
 - [ ] Sortie : etage suivant genere, stats du joueur conservees
+- [ ] Nouvel EventBus a chaque etage (aucun abonne fantome)
 - [ ] Nombre d'etages normaux parametrable (3 a 5) + etage de boss
-- [ ] Difficulte croissante simple via config
+- [ ] Difficulte croissante simple via config (+)
 - [ ] Etage de boss : une grande piece, le boss garde la sortie
-- [ ] Boss : 1 pattern garanti ; 2e et 3e patterns (+)
+- [ ] Boss = un gros monstre (stats via EnemyData), sans mecanique speciale
 - [ ] Victoire = boss mort ; defaite = PV a 0
-- [ ] Nouvel EventBus a chaque run (aucun abonne fantome d'une run a l'autre)
 - [ ] (V) Une run complete se joue du premier etage a la victoire ou la mort
 
 ---
 
-## Phase 8 - Score et leaderboard (S5)
+## Phase 7 - Items (fusion de l'ancienne 3.3 et de l'ancienne Phase 6)
 
-- [ ] Score : etage atteint + monstres tues ; ponderation dans une config (SO)
-- [ ] Leaderboard local JSON, top 10
-- [ ] Nom par defaut ; saisie du nom (+)
-- [ ] (T) Tri, limite top 10, fichier absent ou corrompu ne plante pas
+- [ ] (D) Inventaire en file (3 emplacements) ou usage direct du consommable au ramassage
+- [ ] (D) Un item au sol occupe-t-il une case dans l'OccupancyMap ? (impact sur MoveAction et le ramassage)
+- [ ] (D) Affichage des items au sol : EntityView ou affichage dedie
+- [ ] Donnees d'item (SO) : nom, icone, actif/passif, occupe une place, consommable
+- [ ] Loot au sol : nourriture (petite/moyenne/grosse), hachettes (3/5), potion de vie
+- [ ] Ramassage automatique en marchant dessus
+- [ ] Potion de vie : soin moyen plafonne aux PV max
+- [ ] Placement du loot a la generation (config de densite)
+- [ ] Si inventaire : file de 3 emplacements remplie de droite a gauche sans trou ;
+      plein = ejection de l'item le plus a droite (depose sur la case du joueur), decalage, ajout a gauche ;
+      utilisation = consommation puis decalage vers la droite ; HUD 3 emplacements, clic gauche pour utiliser (GDD 4.4)
+- [ ] Drops de monstres (+)
+- [ ] (T) Ramassage, ressources mises a jour, potion plafonnee ; ResolveMove vers une entite non-creature
+- [ ] (T) Si inventaire : ajout, ejection quand plein (l'item ejecte est renvoye), decalage apres utilisation
+- [ ] (V) Loot visible, ramassage et utilisation visibles a l'ecran
 
 ---
 
-## Phase 9 - Interface et flux de jeu (S5) -> J4 = SLICE
+## Phase 8 - Score et State Machine
 
-- [ ] State Machine : Bootstrap -> Menu -> Run -> FinDeRun -> Menu ; (D) pause = etat ou sous-etat
-- [ ] Input Actions asset - Action Map UI : Pause (Echap)
+- [ ] Score : etage atteint + monstres tues ; ponderation dans une config (SO)
 - [ ] HUD : completer le squelette (score, zone reservee monnaie)
-- [ ] Description d'item au survol
-- [ ] Menu principal : Nouvelle run, Leaderboard, Quitter
-- [ ] Menu pause : reprendre, abandonner, quitter
-- [ ] Ecran de fin : resultat, cause, score, position au leaderboard, rejouer / menu
+- [ ] State Machine : Bootstrap -> Menu -> Run -> FinDeRun -> Menu (pas d'etat Pause dans le proto)
+- [ ] Menu principal : Nouvelle run, Quitter
+- [ ] Ecran de fin : resultat, cause, score, rejouer / menu
 - [ ] Mort du joueur : sortie de l'etat Run, desactivation de la map Gameplay
 - [ ] (V) Plusieurs runs enchainees sans relancer le jeu, tout est remis a zero
 
 ---
 
-## Phase 10 - Assets, animations, audio (S5-S6) -> J5
-
-- [ ] Integration du pack d'assets : tuiles, joueur, monstres, boss, sortie, loot, icones HUD
-- [ ] Taille de tuile et Pixels Per Unit regles selon le pack ; Pixel Perfect Camera
-- [ ] Animations de deplacement / attaque ; ennemis animes ensemble apres resolution du tour
-- [ ] Blocage de l'input pendant les animations
-- [ ] Retours visuels : degats, mort, ramassage
-- [ ] Sons minimum : pas, coup porte, coup recu, ramassage, mort, musique ; (+) ambiances
-- [ ] Police et cadres (verifier les licences)
-- [ ] Verifier le HUD avec les animations : il lit les valeurs actuelles de la Creature, pas celles du moment de l'evenement
-- [ ] (V) Le jeu est lisible : joueur, ennemis, loot, sortie identifiables d'un coup d'oeil
-
----
-
-## Phase 11 - Playtests, equilibrage, build (S6-S7) -> J6 = FINI
+## Phase 9 - Build et playtests -> PROTO
 
 - [ ] Build PC teste (pas seulement l'editeur)
 - [ ] Playtests : 20 runs completes, noter les points bloquants
 - [ ] Equilibrage via les SO : nourriture, PV, hachettes, VisionRange, densites, stats monstres/boss, nombre d'etages
 - [ ] Objectif : la famine met la pression sans etre injuste, le boss est un vrai pic
 - [ ] Corriger les bugs bloquants ; definir la configuration minimale
-- [ ] (V) Criteres du GDD 10.4 tous valides
+- [ ] (V) Criteres du GDD 10.4 valides, hors leaderboard (reporte au palier 0.5)
 - [ ] (+) Repasse de proprete : un fichier par type, langue des commentaires, noms des tests
 
 ---
 
-## Paliers apres la slice (GDD 12.4, seulement si temps restant en S7)
+## Palier 0.5 - Polish (si temps restant avant le 15/12, dans cet ordre)
+
+1. Assets, son et retours visuels
+   - Choix et integration du pack d'assets : tuiles, joueur, monstres, boss, sortie, loot, icones HUD
+   - Taille de tuile et Pixels Per Unit selon le pack ; Pixel Perfect Camera (ratio de la Game view)
+   - Animations de deplacement / attaque ; ennemis animes ensemble apres resolution du tour
+   - Blocage de l'input pendant les animations
+   - Verifier le HUD avec les animations : il lit les valeurs actuelles de la Creature, pas celles du moment de l'evenement
+   - Sons minimum : pas, coup porte, coup recu, ramassage, mort, musique ; (+) ambiances
+   - Retours visuels (degats, mort, ramassage) et textes contextuels, dont la description d'item au survol
+   - Police et cadres (verifier les licences)
+   - (V) Le jeu est lisible : joueur, ennemis, loot, sortie identifiables d'un coup d'oeil
+2. Brouillard : etat par case (jamais vue / deja vue / visible), zone carree de rayon VisionRange (murs ignores),
+   noir si jamais vue, assombri si deja vue, ennemis caches hors vue ; (T) etats corrects ; (V) rendu
+3. Leaderboard local JSON, top 10 ; nom par defaut, saisie du nom (+) ;
+   (T) tri, limite top 10, fichier absent ou corrompu ne plante pas
+4. Menu pause (etat Pause de la State Machine, Action Map UI : Echap) : reprendre, abandonner, quitter
+5. Attaque a distance des monstres
+6. Mecaniques speciales du boss (patterns)
+
+---
+
+## Paliers apres le proto (GDD 10.3)
 
 - Palier 1 : arme, armure, item nourriture -> PV, quelques runes, ceinture (+)
 - Palier 2 : monnaie, marchands
@@ -259,7 +254,8 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - Palier 5 : familiers
 - Palier a definir : test de touche (Dex), support manette, refacto des inputs directionnels en actions Button plutot que Value
 
-## Hors scope de la slice
+## Hors scope pour le moment
 
 Monnaie, marchands, equipement, bijoux, runes, grandes potions, item de transformation,
 familiers, artefacts, autres biomes, Odin, tactile, manette, mecaniques de biome, test de touche.
+Hors scope definitif : interface de seed (saisie, affichage, partage).
