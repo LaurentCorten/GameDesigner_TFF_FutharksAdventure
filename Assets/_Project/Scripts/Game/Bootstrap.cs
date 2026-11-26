@@ -84,6 +84,14 @@ namespace FutharksAdventure.Game
             _inputMap.Dispose();
         }
 
+        private Player InstantiatePlayer()
+        {
+            if (_playerConfig == null)
+                throw new ArgumentNullException(nameof(_playerConfig));
+
+            return new Player(_playerConfig.MaxHealth, _playerConfig.Food, _playerConfig.Hatchets, _playerConfig.VisionRange, _playerConfig.AttackDamage);
+        }
+
         // TEMPORARY: hard-coded test floor, replaced by the procedural generator in Phase 5
         private static FloorGrid BuildTestFloor()
         {
@@ -109,15 +117,6 @@ namespace FutharksAdventure.Game
             return floor;
         }
 
-        private Player InstantiatePlayer()
-        {
-            if (_playerConfig == null)
-                throw new ArgumentNullException(nameof(_playerConfig));
-
-            return new Player(_playerConfig.MaxHealth, _playerConfig.Food, _playerConfig.Hatchets, _playerConfig.VisionRange, _playerConfig.AttackDamage);
-        }
-
-        // TEMPORARY
         private GridPosition GetEntryPosition()
         {
             for (int x = 0; x < _floorGrid.Width; x++)

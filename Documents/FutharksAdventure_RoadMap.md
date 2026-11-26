@@ -94,7 +94,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] (T) Tests de gardes complementaires (EventBus, MoveAction, IntentResolver, TurnManager, FloorGrid, OccupancyMap, RoomCarver, Direction)
 - [x] Conventions : `is null` en C# pur, `== null` pour UnityEngine.Object ; style NUnit Assert.That
 - Reportes : input en Button (palier), conversion GridPosition -> monde (au prochain besoin),
-  ratio de la Game view (Phase 10, Pixel Perfect Camera), repasse de proprete (Phase 11)
+  ratio de la Game view (Palier 0.5, Pixel Perfect Camera), repasse de proprete (Phase 9)
 
 ---
 
@@ -120,7 +120,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - [x] Attaque melee : MoveAction vers une case ennemie => AttackAction
 - [x] Degats fixes, toujours touche (le test de touche est un ajout de palier)
 - [x] ThrowAction + selection automatique de cible (regles GDD 4.5) :
-      alignement 4 axes, portee = VisionRange (carre), ligne de visee non blogit pushquee par un mur,
+      alignement 4 axes, portee = VisionRange (carre), ligne de visee non bloquee par un mur,
       pas de case adjacente, plus proche, egalite -> cible precedente, sinon moins de PV
       (D) egalite de PV aussi : premier de la liste
 - [x] Aucune cible ou stock vide : action refusee, aucun tour, aucune hachette perdue
@@ -135,19 +135,56 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 
 ## Phase 4 - Ennemis
 
-- [ ] (D) Algorithme de deplacement vers le joueur (BFS ou plus simple)
-- [ ] (D) Orchestration du tour des ennemis dans le TurnManager
-- [ ] CreatureDied : publie par le DamageHandler pour les non-joueurs ; EntityView disparait a la mort
-- [ ] Cerveau d'ennemi (strategie par comportement) : Chaser, Wanderer
-- [ ] EnemyData (SO) : nom, PV, degats, VisionRange, randomStepChance, score, drop (MockEnemyConfig evolue)
-- [ ] 2 types de monstres garantis aux stats distinctes ; 3e type (+)
-- [ ] 1 action par tour : deplacement OU attaque ; conflit de case : premier de la liste gagne
-- [ ] Mort : retire de la grille, evenement (score plus tard)
-- [ ] EntityView reutilisee pour les ennemis (apparition, deplacement, disparition)
-- [ ] Projectile visuel du lancer de hachette ; (D) blocage de l'input pendant l'animation ou projectile instantane
-- [ ] (T) Detection, poursuite, attaque, mort ; aucun ennemi ne traverse un mur ou un autre ennemi
+### 4.1 Decisions
+- [x] (D) Ordre du tour : action du joueur (couts preleves a l'usage) -> cout du tour -> ennemis dans l'ordre de la liste -> TurnResolved
+- [x] (D) Joueur tue pendant la phase ennemie : les ennemis suivants finissent le tour en silence
+      (AttackAction refuse une cible morte) ; un seul PlayerDied
+- [x] (D) Deroule sequentiel garde pour le proto : un joueur qui fuit n'est plus adjacent quand le monstre joue
+      (resolution simultanee reportee, voir paliers)
+- [x] (D) Les ennemis utilisent les memes GameAction que le joueur (MoveAction, AttackAction)
+- [x] (D) Deplacement : BFS sur les murs seulement (les autres creatures sont ignorees pour le calcul du chemin) ;
+      case suivante occupee -> autre case voisine qui rapproche aussi ; si aucune : [a trancher]
+- [x] (D) Liste des ennemis : List<Enemy> dans le TurnManager, passee au constructeur, construite en debut d'etage ;
+      ennemis morts sautes pendant la boucle (IsDead), purges en fin de tour ; AddEnemy si besoin avec le generateur (Phase 5)
+- [x] (D) Hasard : une instance de System.Random injectee des la Phase 4 (anticipation de la Phase 5)
+
+### 4.2 IA des ennemis (Core) - feature/enemy-ai
+- [x] WeightedRandom.TryPick (selection ponderee) : poids int, 0 valide, negatif = exception,
+      liste vide ou total 0 = false
+- [ ] BFS : premier pas vers une cible, seuls les murs bloquent
+- [ ] IEnemyBrain (interface anticipee pour l'attaque a distance et le boss du palier 0.5) + cerveau Stroll/Chase ;
+      (D) le joueur est-il une dependance du cerveau ou un parametre de Decide ?
+- [ ] Etat recalcule a chaque tour : Chase si le joueur est dans le carre de rayon VisionRange (murs ignores), sinon Stroll
+- [ ] Adjacent au joueur (4 directions) = attaque systematique
+- [ ] Chase : pas du BFS ; avec la probabilite randomStepChance, pas aleatoire pondere a la place
+      (lateral fort, recul faible, direction de poursuite exclue) pour pouvoir etre seme
+- [ ] Stroll : tirage pondere parmi les 4 directions + rester sur place, malus vers LastPosition (anti aller-retour)
+- [ ] Aucune option possible (total 0) -> RefusedAction, le monstre reste sur place
+- [ ] (T) WeightedRandom (FakeRandom dans TestStatics), BFS, cerveau Stroll/Chase
+
+### 4.3 Tour des ennemis (Core) - feature/enemy-turn
+- [ ] Phase ennemie dans le TurnManager : 1 action par ennemi (deplacement OU attaque) ;
+      conflit de case : le premier de la liste gagne
+- [ ] (T) Detection, poursuite, attaque ; aucun ennemi ne traverse un mur ou un autre ennemi
 - [ ] (T) Deux ennemis frappent un joueur mourant dans le meme tour : un seul PlayerDied (condition = passage vivant -> mort)
-- [ ] (V) Combat jouable a l'ecran, famine fonctionnelle
+- [ ] (T) Ennemi mort en cours de tour : saute, puis purge de la liste
+
+### 4.4 Mort des ennemis - feature/enemy-views
+- [ ] CreatureDied publie par le DamageHandler pour les non-joueurs
+      (ApplyDamage retire deja la creature de l'OccupancyMap) ; points de score en Phase 8
+- [ ] EntityView reutilisee pour les ennemis : apparition, deplacement, disparition a la mort
+- [ ] (T) CreatureDied publie une seule fois, jamais pour le joueur
+
+### 4.5 Donnees des ennemis - feature/enemy-data
+- [ ] EnemyData (SO) : nom, PV, degats, VisionRange, randomStepChance, poids de deplacement
+      (Stroll et pas aleatoire), score, drop ; remplace MockEnemyConfig
+- [ ] 2 types de monstres garantis aux stats distinctes ; 3e type (+)
+
+### 4.6 Projectile - feature/throw-projectile
+- [ ] Projectile visuel du lancer de hachette ; (D) input bloque pendant l'animation, ou projectile instantane
+
+### 4.7 Validation
+- [ ] (V) Combat jouable a l'ecran, famine fonctionnelle, un monstre peut etre seme
 
 ---
 
@@ -252,7 +289,7 @@ Objectif : un carre qui se deplace sur une grille, un tour a la fois, camera qui
 - Palier 3 : lootables de score
 - Palier 4 : grandes potions, plus de sorts
 - Palier 5 : familiers
-- Palier a definir : test de touche (Dex), support manette, refacto des inputs directionnels en actions Button plutot que Value
+- Palier a definir : test de touche (Dex), support manette, refacto des inputs directionnels en actions Button plutot que Value, tester alternative = Resolution simultanee du tour : decisions de toutes les creatures -> TurnResolved -> application des changements -> mise en scene (le joueur qui fuit un monstre adjacent prend un coup en passant)
 
 ## Hors scope pour le moment
 

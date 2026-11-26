@@ -1,3 +1,4 @@
+using System;
 using FutharksAdventure.Core;
 
 namespace FutharksAdventure.Tests
@@ -102,5 +103,40 @@ namespace FutharksAdventure.Tests
             Occupancy.Place(enemy, position);
             return enemy;
         }
+    }
+
+    /// <summary>
+    /// Faux generateur aleatoire : Next(maxValue) renvoie toujours la valeur choisie.
+    /// Les autres methodes levent une exception pour imposer le contrat Next(maxValue).
+    /// </summary>
+    internal class FakeRandom : Random
+    {
+        private readonly int _value;
+
+        /// <summary>Dernier maxValue recu (-1 si Next n'a jamais ete appele).</summary>
+        public int LastMaxValue { get; private set; } = -1;
+
+        public FakeRandom(int value)
+        {
+            _value = value;
+        }
+
+        public override int Next(int maxValue)
+        {
+            LastMaxValue = maxValue;
+            if (_value < 0 || _value >= maxValue)
+                throw new InvalidOperationException(
+                    $"FakeRandom mal configure : {_value} hors de [0, {maxValue}[");
+            return _value;
+        }
+
+        public override int Next() =>
+            throw new NotSupportedException("Utiliser Next(maxValue)");
+
+        public override int Next(int minValue, int maxValue) =>
+            throw new NotSupportedException("Utiliser Next(maxValue)");
+
+        public override double NextDouble() =>
+            throw new NotSupportedException("Utiliser Next(maxValue)");
     }
 }
