@@ -31,7 +31,7 @@ namespace FutharksAdventure.Core
 
         public GameAction ResolveMove(Creature creature, Direction direction)
         {
-            if (creature is null) throw new ArgumentNullException();
+            if (creature is null) throw new ArgumentNullException(nameof(creature));
 
             GridPosition targetPosition = creature.Position + direction.ToGridOffset();
             Entity occupant = _occupancyMap.GetEntity(targetPosition);

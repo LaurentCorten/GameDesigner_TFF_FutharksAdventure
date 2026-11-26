@@ -10,7 +10,7 @@ namespace FutharksAdventure.Core
 
         protected override void Execute()
         {
-            throw new System.NotImplementedException();
+            // NOOP
         }
     }
 }

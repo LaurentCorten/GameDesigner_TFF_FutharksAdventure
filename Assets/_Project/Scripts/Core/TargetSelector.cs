@@ -9,8 +9,8 @@ namespace FutharksAdventure.Core
     {
         private readonly FloorGrid _floorGrid;
         private readonly OccupancyMap _occupancyMap;
+        private readonly Dictionary<Creature, int> _accessibleTargets = new Dictionary<Creature, int>();
         private Creature _lastTarget;
-        private Dictionary<Creature, int> _accessibleTargets = new Dictionary<Creature, int>();
 
         public TargetSelector(FloorGrid floorGrid, OccupancyMap occupancyMap)
         {
