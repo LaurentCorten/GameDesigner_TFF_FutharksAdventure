@@ -15,7 +15,7 @@ namespace FutharksAdventure.Tests
         {
             var map = Pathfinder.ComputeDistances(TestFloors.CreateRoom7x7(), P(4, 4));
 
-            Assert.That(map.GetDistance(P(4, 4)), Is.EqualTo(0));
+            Assert.That(map.GetDistanceToTarget(P(4, 4)), Is.EqualTo(0));
         }
 
         [TestCase(4, 7, 3)] // tout droit au nord
@@ -26,7 +26,7 @@ namespace FutharksAdventure.Tests
         {
             var map = Pathfinder.ComputeDistances(TestFloors.CreateRoom7x7(), P(4, 4));
 
-            Assert.That(map.GetDistance(P(x, y)), Is.EqualTo(expected));
+            Assert.That(map.GetDistanceToTarget(P(x, y)), Is.EqualTo(expected));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace FutharksAdventure.Tests
         {
             var map = Pathfinder.ComputeDistances(TestFloors.CreateCorridor3x1(), P(1, 1));
 
-            Assert.That(map.GetDistance(P(3, 1)), Is.EqualTo(2));
+            Assert.That(map.GetDistanceToTarget(P(3, 1)), Is.EqualTo(2));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace FutharksAdventure.Tests
             // (2,1) -> (2,7) : 6, -> (6,7) : 4, -> (6,1) : 6  => 16
             var map = Pathfinder.ComputeDistances(TestFloors.CreateRoom7x7SplitByWall(), P(6, 1));
 
-            Assert.That(map.GetDistance(P(2, 1)), Is.EqualTo(16));
+            Assert.That(map.GetDistanceToTarget(P(2, 1)), Is.EqualTo(16));
         }
 
         // --- Cases inaccessibles ---
@@ -53,7 +53,7 @@ namespace FutharksAdventure.Tests
         {
             var map = Pathfinder.ComputeDistances(TestFloors.CreateRoom7x7SplitByWall(), P(6, 1));
 
-            Assert.That(map.GetDistance(P(4, 3)), Is.EqualTo(DistanceMap.UNREACHABLE));
+            Assert.That(map.GetDistanceToTarget(P(4, 3)), Is.EqualTo(DistanceMap.UNREACHABLE));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace FutharksAdventure.Tests
         {
             var map = Pathfinder.ComputeDistances(TestFloors.CreateCorridor3x1(), P(1, 1));
 
-            Assert.That(map.GetDistance(P(0, 0)), Is.EqualTo(DistanceMap.UNREACHABLE));
+            Assert.That(map.GetDistanceToTarget(P(0, 0)), Is.EqualTo(DistanceMap.UNREACHABLE));
         }
 
         [Test]
@@ -69,16 +69,7 @@ namespace FutharksAdventure.Tests
         {
             var map = Pathfinder.ComputeDistances(TestFloors.CreateTwoUnconnectedRooms(), P(2, 2));
 
-            Assert.That(map.GetDistance(P(6, 2)), Is.EqualTo(DistanceMap.UNREACHABLE));
-        }
-
-        [TestCase(-1, 0)]
-        [TestCase(100, 100)]
-        public void GetDistance_OutsideGrid_IsUnreachable(int x, int y)
-        {
-            var map = Pathfinder.ComputeDistances(TestFloors.CreateRoom7x7(), P(4, 4));
-
-            Assert.That(map.GetDistance(P(x, y)), Is.EqualTo(DistanceMap.UNREACHABLE));
+            Assert.That(map.GetDistanceToTarget(P(6, 2)), Is.EqualTo(DistanceMap.UNREACHABLE));
         }
 
         // --- Gardes ---

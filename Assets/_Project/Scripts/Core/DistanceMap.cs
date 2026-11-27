@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 
 
@@ -8,21 +9,49 @@ namespace FutharksAdventure.Core
     {
         public const int UNREACHABLE = -1;
         private readonly int[,] _distances;
+        private readonly int _mapHeight;
+        private readonly int _mapWidth;
 
-        public DistanceMap(int[,] distances)
+        internal DistanceMap(int[,] distances)
         {
+            if (distances is null) throw new ArgumentNullException(nameof(distances));
+
             _distances = distances;
+            _mapWidth = _distances.GetLength(0);
+            _mapHeight = _distances.GetLength(1);
         }
 
-
-        public int GetDistance(GridPosition moverPosition)
+        public int GetDistanceToTarget(GridPosition fromPosition)
         {
-            return _distances[moverPosition.X, moverPosition.Y];
+            if (!IsInMap(fromPosition)) throw new ArgumentOutOfRangeException(nameof(fromPosition));
+            
+            return _distances[fromPosition.X, fromPosition.Y];
         }
 
-        public Direction GetApproachingDirections(GridPosition position)
+        public IReadOnlyList<Direction> GetApproachingDirections(GridPosition moverPosition)
         {
-            throw new NotImplementedException();
+            if (!IsInMap(moverPosition)) throw new ArgumentOutOfRangeException(nameof(moverPosition));
+            if (_distances[moverPosition.X, moverPosition.Y] <= 0) throw new ArgumentException(nameof(moverPosition));
+
+            List<Direction> directions= new List<Direction>(4);
+            int current = _distances[moverPosition.X, moverPosition.Y];
+
+            foreach(Direction dir in DirectionExtensions.AllDirections)
+            {
+                int neighborDistance = GetDistanceToTarget(moverPosition + dir.ToGridOffset());
+
+                if (neighborDistance == UNREACHABLE || neighborDistance > current)
+                    continue;
+
+                if (neighborDistance == current - 1) directions.Add(dir);
+            }
+
+            return directions;
+        }
+
+        private bool IsInMap(GridPosition position)
+        {
+            return !(position.X < 0 || position.Y < 0 || position.X >= _mapWidth || position.Y >= _mapHeight);
         }
     }
 }

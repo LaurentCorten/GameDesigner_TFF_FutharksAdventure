@@ -1,5 +1,5 @@
 {
-    "name": "EditMode",
+    "name": "FutharksAdventure.Tests",
     "rootNamespace": "FutharksAdventure.Tests",
     "references": [
         "UnityEngine.TestRunner",

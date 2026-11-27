@@ -42,16 +42,16 @@ namespace FutharksAdventure.Core
                 {
                     Direction direction = DirectionExtensions.AllDirections[i];
 
-                    GridPosition neighbour = current + direction.ToGridOffset();
+                    GridPosition neighbor = current + direction.ToGridOffset();
 
                     // Mur, vide ou hors grille : IsWalkable renvoie false
-                    if (!grid.IsWalkable(neighbour)) continue;
+                    if (!grid.IsWalkable(neighbor)) continue;
 
                     // Deja atteinte : on l'a forcement atteinte par un chemin aussi court ou plus court
-                    if (distances[neighbour.X, neighbour.Y] != DistanceMap.UNREACHABLE) continue;
+                    if (distances[neighbor.X, neighbor.Y] != DistanceMap.UNREACHABLE) continue;
 
-                    distances[neighbour.X, neighbour.Y] = nextDistance;
-                    queue.Enqueue(neighbour);
+                    distances[neighbor.X, neighbor.Y] = nextDistance;
+                    queue.Enqueue(neighbor);
                 }
             }
 
