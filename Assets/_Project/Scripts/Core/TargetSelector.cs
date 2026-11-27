@@ -29,7 +29,7 @@ namespace FutharksAdventure.Core
             _accessibleTargets.Clear();
 
             // Vérifie les 4 directions dans l'ordre pour des candidats potentiels
-            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+            foreach (Direction direction in DirectionExtensions.AllDirections)
                 CheckDirection(direction, thrower);
 
             // S'il y en a aucun on renvoie null

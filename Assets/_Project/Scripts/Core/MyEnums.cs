@@ -42,12 +42,4 @@ namespace FutharksAdventure.Core
         South =4,
         West =8
     }
-
-    public enum Direction
-    {
-        North,
-        East,
-        South,
-        West
-    }
 }

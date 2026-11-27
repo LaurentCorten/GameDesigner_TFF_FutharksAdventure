@@ -30,6 +30,32 @@ namespace FutharksAdventure.Tests
                 grid.SetTileType(new GridPosition(x, 1), TileType.Floor);
             return grid;
         }
+
+        // Piece 7x7 coupee par un mur vertical en x = 4, de y = 1 a y = 6.
+        // Seul passage entre les deux moities : la case (4,7), en haut.
+        //
+        //  y=7  . . . o . . .     o = passage
+        //  y=6  . . . # . . .     # = mur
+        //  ...  . . . # . . .
+        //  y=1  . . . # . . .
+        //       1 2 3 4 5 6 7  (x)
+        public static FloorGrid CreateRoom7x7SplitByWall()
+        {
+            var grid = CreateRoom7x7();
+            for (int y = 1; y <= 6; y++)
+                grid.SetTileType(new GridPosition(4, y), TileType.Wall);
+            return grid;
+        }
+
+        // Grille 9x5 : deux pieces 3x3 sans porte, separees par un mur commun en x = 4.
+        // Piece A : sol de (1,1) a (3,3). Piece B : sol de (5,1) a (7,3).
+        public static FloorGrid CreateTwoUnconnectedRooms()
+        {
+            var grid = new FloorGrid(9, 5);
+            RoomCarver.CarveRoom(grid, new GridPosition(2, 2), 3, 3, Sides.None);
+            RoomCarver.CarveRoom(grid, new GridPosition(6, 2), 3, 3, Sides.None);
+            return grid;
+        }
     }
 
     /// <summary>
@@ -106,14 +132,14 @@ namespace FutharksAdventure.Tests
     }
 
     /// <summary>
-    /// Faux generateur aleatoire : Next(maxValue) renvoie toujours la valeur choisie.
-    /// Les autres methodes levent une exception pour imposer le contrat Next(maxValue).
+    /// Faux générateur aléatoire : Next(maxValue) renvoie toujours la valeur choisie.
+    /// Les autres méthodes lèvent une exception pour imposer le contrat Next(maxValue).
     /// </summary>
     internal class FakeRandom : Random
     {
         private readonly int _value;
 
-        /// <summary>Dernier maxValue recu (-1 si Next n'a jamais ete appele).</summary>
+        /// <summary>Dernier maxValue reçu (-1 si Next n'a jamais été appelé).</summary>
         public int LastMaxValue { get; private set; } = -1;
 
         public FakeRandom(int value)
